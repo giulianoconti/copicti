@@ -1,0 +1,232 @@
+.navbar {
+  align-items: center;
+  background-color: var(--color-5);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  height: 4rem;
+  justify-content: space-between;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 100;
+}
+
+.navbar__container {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto;
+  max-width: 1200px;
+  width: 100%;
+  z-index: 100;
+}
+
+.navbar__logo {
+  color: #000;
+  font-size: 1.5rem;
+  font-weight: 700;
+  height: 32px;
+  text-decoration: none;
+  width: 152px;
+}
+
+.navbar__logo-img {
+  background-color: var(--color-6);
+  border-radius: 16px;
+  height: 32px;
+  margin: 0 0 0 8px;
+  width: 64px;
+}
+
+.navbar__menu-list {
+  align-items: center;
+  display: flex;
+  list-style: none;
+}
+
+.navbar__menu-item {
+  margin: 0 0.5rem;
+}
+
+.navbar__menu-link {
+  background-color: var(--color-6);
+  border-radius: 16px;
+  color: var(--color-5);
+  font-size: 1rem;
+  font-weight: 500;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.navbar__menu-link:hover {
+  background-color: var(--color-4);
+  color: var(--white-color);
+}
+
+.navbar__icons {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  width: 152px;
+}
+
+.navbar__icon {
+  background-color: var(--color-6);
+  border-radius: 16px;
+  display: flex;
+  font-size: 1.5rem;
+  height: 32px;
+  justify-content: center;
+  margin: 0 8px;
+  padding: 0 16px;
+  transition: all 0.3s ease;
+  width: 50%;
+}
+
+.navbar__icon:hover {
+  background-color: var(--color-4);
+}
+
+.navbar__icon:hover .fas {
+  fill: var(--white-color);
+}
+
+.navbar__icon:hover .navbar__username {
+  color: var(--white-color);
+}
+
+.navbar__username {
+  align-items: center;
+  color: var(--color-5);
+  display: flex;
+  font-size: 1rem;
+  font-weight: 500;
+  justify-content: center;
+  margin-left: 6px;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.fas {
+  fill: var(--color-5);
+  height: 16px;
+  transition: fill 0.3s ease;
+  width: 16px;
+}
+
+.navbar__menu-icon {
+  display: none;
+}
+
+.navbar__menu-mobile {
+  display: none;
+}
+
+.navbar__show-button {
+  display: none;
+}
+
+.active {
+  background-color: var(--color-4);
+  color: var(--white-color);
+}
+
+.active .fas {
+  fill: var(--white-color);
+}
+
+.active .navbar__username {
+  color: var(--white-color);
+}
+
+@media screen and (max-width: 768px) {
+  .navbar {
+    padding: 0 16px;
+  }
+  
+  .navbar__menu {
+    display: none;
+  }
+
+  .navbar__logo {
+    width: 40px;
+  }
+
+  .navbar__menu-icon {
+    align-items: center;
+    background-color: var(--color-6);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    height: 40px;
+    justify-content: center;
+    transition: all 0.3s ease;
+    width: 40px;
+  }
+
+  .navbar__menu-icon:hover {
+    background-color: var(--color-4);
+  }
+
+  .navbar__menu-icon:hover .fas {
+    fill: var(--white-color);
+  }
+
+  .navbar__menu-mobile {
+    background-color: #fff;
+    display: block;
+    left: 0;
+    position: absolute;
+    top: 63px;
+    transition: all 0.3s ease;
+    width: 100%;
+  }
+
+  .navbar__menu-list {
+    background: linear-gradient(180deg, var(--color-5) 0%, var(--color-4) 100%);
+    flex-direction: column;
+    height: 100vh;
+    opacity: 1;
+    padding: 64px 0 0 0;
+    position: fixed;
+    top: 0;
+    transition: all 0.3s ease;
+    width: 100%;
+  }
+
+  .navbar__menu-item {
+    width: 100%;
+  }
+
+  .navbar__menu-link {
+    background-color: transparent;
+    border-radius: 0;
+    color: var(--color-6);
+    display: block;
+    font-size: 24px;
+    font-weight: 500;
+    padding: 24px 0;
+    text-align: center;
+    width: 100%;
+  }
+
+  .navbar__show-menu-mobile {
+    left: 0;
+    opacity: 1;
+    transition: all 0.3s ease;
+  }
+
+  .navbar__hidden-menu-mobile {
+    left: -100%;
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  .active {
+    background-color: var(--color-4);
+    color: var(--white-color);
+  }
+}

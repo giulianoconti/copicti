@@ -1,0 +1,80 @@
+.home-screen {
+  background: rgb(214, 201, 169);
+  background-image: url("../../pictures/homePic.webp");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+  width: 100%;
+}
+
+.home-container {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding-top: 96px;
+  width: 100%;
+}
+
+.home-frame {
+  border-radius: 2px;
+  box-shadow: -7px 4px 0 -3px rgba(50, 50, 50, 0.3);
+  box-sizing: border-box;
+  display: inline-block;
+  height: 350px;
+  margin: 0 8px;
+  padding: 8vmin;
+  position: relative;
+  text-align: center;
+  transition: scale 0.3s ease;
+  width: 150px;
+}
+
+.home-frame:hover {
+  scale: 1.1;
+}
+
+.home-frame-title {
+  background-color: rgba(50, 50, 50, 0.8);
+  bottom: 16px;
+  color: var(--white-color);
+  font-size: 12px;
+  left: 0;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 8px;
+  position: absolute;
+  right: 0;
+  width: 80%;
+  z-index: 1;
+}
+
+.home-img {
+  border: solid 2px;
+  border-bottom-color: #ffe;
+  border-left-color: #eed;
+  border-right-color: #eed;
+  border-top-color: #ccb;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+@media screen and (max-width: 768px) {
+  .home-frame {
+    height: 48vw;
+    margin: 0 8px;
+    width: 31vw;
+  }
+
+  .home-frame-title {
+    font-size: 10px;
+  }
+}

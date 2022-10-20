@@ -1,0 +1,62 @@
+.bg-1 {
+  background-color: var(--color-1);
+}
+
+.bg-2 {
+  background-color: var(--color-2);
+}
+
+.bg-3 {
+  background-color: var(--color-3);
+}
+
+.bg-4 {
+  background-color: var(--color-4);
+}
+
+.bg-5 {
+  background-color: var(--color-5);
+}
+
+.bg-6 {
+  background-color: var(--color-6);
+}
+
+.m-0 {
+  margin: 0px;
+}
+
+.cursor-default {
+  cursor: default;
+}
+
+.d-none {
+  display: none;
+}
+
+.flex {
+  display: flex;
+}
+
+.mx-6 {
+  margin: 0 6px;
+}
+.scale-0_75 {
+  scale: 0.75;
+}
+
+.hover-scale-1:hover {
+  scale: 1;
+}
+
+.scale-1_25 {
+  scale: 1.25;
+}
+
+.w-50 {
+  width: 50%;
+}
+
+.w-100 {
+  width: 100%;
+}
