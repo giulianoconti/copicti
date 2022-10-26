@@ -173,11 +173,11 @@
     width: 40px;
   }
 
-  .navbar__menu-icon:hover {
+  .navbar__menu-icon:active {
     background-color: var(--color-4);
   }
 
-  .navbar__menu-icon:hover .fas {
+  .navbar__menu-icon:active .fas {
     fill: var(--white-color);
   }
 

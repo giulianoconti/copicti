@@ -470,7 +470,7 @@ input[type="number"] {
   }
 
   .createPicture-box:hover {
-    scale: 1 1.1;
+    scale: 0.6;
   }
 
   .createPicture-image {
@@ -484,7 +484,11 @@ input[type="number"] {
 
   .createPicture-btn-previus {
     border-radius: 0;
-    left: 5%;
+    left: 0;
+    margin: auto;
+    right: 0;
+    top: -64px;
+    width: 128px;
   }
 
   .createPicture-box-show-img {
@@ -494,6 +498,7 @@ input[type="number"] {
     font-size: 12px;
     padding: 24px 0;
     text-align: center;
+    min-height: 70vh;
   }
 
   .createPicture-btn-file {
