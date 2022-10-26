@@ -23,8 +23,10 @@
 }
 
 .navbar__logo {
-  color: #000;
-  font-size: 1.5rem;
+  align-items: center;
+  color: var(--color-6);
+  display: flex;
+  font-size: 16px;
   font-weight: 700;
   height: 32px;
   text-decoration: none;
@@ -32,11 +34,10 @@
 }
 
 .navbar__logo-img {
-  background-color: var(--color-6);
   border-radius: 16px;
-  height: 32px;
-  margin: 0 0 0 8px;
-  width: 64px;
+  height: 40px;
+  margin: 0 8px;
+  width: 40px;
 }
 
 .navbar__menu-list {
@@ -146,13 +147,18 @@
   .navbar {
     padding: 0 16px;
   }
-  
+
   .navbar__menu {
     display: none;
   }
 
   .navbar__logo {
+    font-size: 12px;
     width: 40px;
+  }
+
+  .navbar__logo-img {
+    margin: 0 2px 0 8px;
   }
 
   .navbar__menu-icon {
