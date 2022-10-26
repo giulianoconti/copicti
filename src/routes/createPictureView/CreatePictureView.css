@@ -505,6 +505,10 @@ input[type="number"] {
     border-radius: 0;
   }
 
+  .createPicture-image-final {
+    height: 500px;
+  }
+
   .image-cropped-width {
     font-size: 8px;
   }
