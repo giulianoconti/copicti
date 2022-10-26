@@ -1,49 +1,46 @@
 import React, { useEffect, useState } from "react";
 import { BoxPicturesContainer } from "../../components/boxPicturesContainer/BoxPicturesContainer";
-import copictiPolyptychL from "../../pictures/copictiPolyptychL.webp";
-import copictiPolyptychM from "../../pictures/copictiPolyptychM.webp";
-import copictiPolyptychS from "../../pictures/copictiPolyptychS.webp";
-import copictiPolyptychSameHeightL from "../../pictures/copictiPolyptychSameHeightL.webp";
-import copictiPolyptychSameHeightM from "../../pictures/copictiPolyptychSameHeightM.webp";
-import copictiPolyptychSameHeightS from "../../pictures/copictiPolyptychSameHeightS.webp";
-import copictiTriptychL from "../../pictures/copictiTriptychL.webp";
-import copictiTriptychM from "../../pictures/copictiTriptychM.webp";
-import copictiTriptychS from "../../pictures/copictiTriptychS.webp";
-import copictiTriptychLSquare from "../../pictures/copictiTriptychLSquare.webp";
-import copictiTriptychMSquare from "../../pictures/copictiTriptychMSquare.webp";
-import copictiTriptychSSquare from "../../pictures/copictiTriptychSSquare.webp";
-import copictiTriptychLCircular from "../../pictures/copictiTriptychLCircular.webp";
-import copictiTriptychMCircular from "../../pictures/copictiTriptychMCircular.webp";
-import copictiTriptychSCircular from "../../pictures/copictiTriptychSCircular.webp";
-import arrowLeft from "../../pictures/arrow-left.svg";
-import copictiEmpty from "../../pictures/copictiEmpty.webp";
-import copictiEmptyPlant from "../../pictures/copictiEmptyPlant.webp";
 import { IsLoading } from "../../components/isLoading/IsLoading";
 import "./CreatePictureView.css";
 import "../../stylesGlobal.css";
 
 const allCopictiImages = {
-  polyptychL: copictiPolyptychL,
-  polyptychM: copictiPolyptychM,
-  polyptychS: copictiPolyptychS,
-  polyptychSameHeightL: copictiPolyptychSameHeightL,
-  polyptychSameHeightM: copictiPolyptychSameHeightM,
-  polyptychSameHeightS: copictiPolyptychSameHeightS,
-  triptychL: copictiTriptychL,
-  triptychM: copictiTriptychM,
-  triptychS: copictiTriptychS,
-  triptychSquareL: copictiTriptychLSquare,
-  triptychSquareM: copictiTriptychMSquare,
-  triptychSquareS: copictiTriptychSSquare,
-  triptychCircularL: copictiTriptychLCircular,
-  triptychCircularM: copictiTriptychMCircular,
-  triptychCircularS: copictiTriptychSCircular,
+  polyptychL:
+    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiPolyptychL.webp?alt=media&token=e481800f-288c-4362-83e5-ff05091fd735",
+  polyptychM:
+    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiPolyptychM.webp?alt=media&token=10e2b05c-59aa-40cf-89c9-1fe370a234a1",
+  polyptychS:
+    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiPolyptychS.webp?alt=media&token=34515933-e4d4-4a4d-b8ff-4144bc9c7aef",
+  polyptychSameHeightL:
+    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiPolyptychSameHeightL.webp?alt=media&token=1947041f-bb0e-433e-b0dc-3048b7e85e4c",
+  polyptychSameHeightM:
+    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiPolyptychSameHeightM.webp?alt=media&token=8b3c4ddd-4f3f-4d8e-941a-a0f1aaf0ff79",
+  polyptychSameHeightS:
+    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiPolyptychSameHeightS.webp?alt=media&token=f088a3df-0a46-46ea-b112-b3e6bba30852",
+  triptychL:
+    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiTriptychL.webp?alt=media&token=d6aea274-5e09-494c-ac6e-3f9ffe32b815",
+  triptychM:
+    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiTriptychM.webp?alt=media&token=66016cbb-b0c0-4b0e-ae6c-a5729adb5751",
+  triptychS:
+    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiTriptychS.webp?alt=media&token=d0144544-0eb3-4299-81f4-dca1e4c8a1ef",
+  triptychSquareL:
+    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiTriptychLSquare.webp?alt=media&token=e8f3befa-a19d-4b57-a0d6-ed969c6790af",
+  triptychSquareM:
+    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiTriptychMSquare.webp?alt=media&token=a1657553-c835-4e07-ba6e-9ddb7ba06628",
+  triptychSquareS:
+    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiTriptychSSquare.webp?alt=media&token=6b237a3e-3dfe-4e64-bb27-828b1a845678",
+  triptychCircularL:
+    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiTriptychLCircular.webp?alt=media&token=0969996c-7cc1-4112-b715-a87246411363",
+  triptychCircularM:
+    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiTriptychMCircular.webp?alt=media&token=47070bdc-28ef-4677-850e-8f512b34b2a8",
+  triptychCircularS:
+    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiTriptychSCircular.webp?alt=media&token=8ef8ad84-ebad-48d6-aa9a-59a82b71d9aa",
 };
 
 export const CreatePictureView = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [optionSelected, setOptionSelected] = useState({
-    background: copictiPolyptychL,
+    background: "",
     distribution: "",
     images: [],
     oneOrMultipleImages: "",
@@ -59,10 +56,10 @@ export const CreatePictureView = () => {
       setIsLoading(true);
       handleOptionSelected(
         "background",
-        allCopictiImages[optionSelected.distribution + optionSelected.size[0].toUpperCase()]
+        allCopictiImages[optionSelected?.distribution + optionSelected?.size[0]?.toUpperCase()]
       );
       const loadCopictiImage = new Image();
-      loadCopictiImage.src = allCopictiImages[optionSelected.distribution + optionSelected.size[0].toUpperCase()];
+      loadCopictiImage.src = allCopictiImages[optionSelected?.distribution + optionSelected.size[0]?.toUpperCase()];
       loadCopictiImage.onload = () => {
         setIsLoading(false);
       };
@@ -256,7 +253,11 @@ export const CreatePictureView = () => {
         {optionSelected.distribution === "polyptych" && (
           <>
             <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-              <img className="createPicture-svg" src={arrowLeft} alt="previous" />
+              <img
+                className="createPicture-svg"
+                src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
+                alt="previous"
+              />
             </button>
             {optionSelected.oneOrMultipleImages === "" && (
               <>
@@ -290,7 +291,11 @@ export const CreatePictureView = () => {
                   className="createPicture-btn-previus"
                   onClick={() => handleOptionSelected("oneOrMultipleImages", "")}
                 >
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
+                  <img
+                    className="createPicture-svg"
+                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
+                    alt="previous"
+                  />
                 </button>
                 <BoxPicturesContainer
                   boxes={[
@@ -344,7 +349,11 @@ export const CreatePictureView = () => {
             {optionSelected.size !== "" && optionSelected.oneOrMultipleImages === "one" && (
               <div className="createPicture-box-show-img">
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
+                  <img
+                    className="createPicture-svg"
+                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
+                    alt="previous"
+                  />
                 </button>
                 <div className="createPicture-span-btn-file">
                   <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
@@ -382,7 +391,11 @@ export const CreatePictureView = () => {
             {optionSelected.oneOrMultipleImages === "" && (
               <>
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
+                  <img
+                    className="createPicture-svg"
+                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
+                    alt="previous"
+                  />
                 </button>
                 <BoxPicturesContainer
                   boxes={[
@@ -414,7 +427,11 @@ export const CreatePictureView = () => {
                   className="createPicture-btn-previus"
                   onClick={() => handleOptionSelected("oneOrMultipleImages", "")}
                 >
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
+                  <img
+                    className="createPicture-svg"
+                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
+                    alt="previous"
+                  />
                 </button>
                 <BoxPicturesContainer
                   boxes={[
@@ -465,7 +482,11 @@ export const CreatePictureView = () => {
             {optionSelected.size !== "" && optionSelected.oneOrMultipleImages === "one" && (
               <div className="createPicture-box-show-img">
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
+                  <img
+                    className="createPicture-svg"
+                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
+                    alt="previous"
+                  />
                 </button>
                 <div className="createPicture-span-btn-file">
                   <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
@@ -503,7 +524,11 @@ export const CreatePictureView = () => {
             {optionSelected.oneOrMultipleImages === "" && (
               <>
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
+                  <img
+                    className="createPicture-svg"
+                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
+                    alt="previous"
+                  />
                 </button>
                 <BoxPicturesContainer
                   boxes={[
@@ -535,7 +560,11 @@ export const CreatePictureView = () => {
                   className="createPicture-btn-previus"
                   onClick={() => handleOptionSelected("oneOrMultipleImages", "")}
                 >
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
+                  <img
+                    className="createPicture-svg"
+                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
+                    alt="previous"
+                  />
                 </button>
                 <BoxPicturesContainer
                   boxes={[
@@ -583,7 +612,11 @@ export const CreatePictureView = () => {
             {optionSelected.size !== "" && optionSelected.oneOrMultipleImages === "one" && (
               <div className="createPicture-box-show-img">
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
+                  <img
+                    className="createPicture-svg"
+                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
+                    alt="previous"
+                  />
                 </button>
                 <div className="createPicture-span-btn-file">
                   <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
@@ -621,7 +654,11 @@ export const CreatePictureView = () => {
             {optionSelected.oneOrMultipleImages === "" && (
               <>
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
+                  <img
+                    className="createPicture-svg"
+                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
+                    alt="previous"
+                  />
                 </button>
                 <BoxPicturesContainer
                   boxes={[
@@ -653,7 +690,11 @@ export const CreatePictureView = () => {
                   className="createPicture-btn-previus"
                   onClick={() => handleOptionSelected("oneOrMultipleImages", "")}
                 >
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
+                  <img
+                    className="createPicture-svg"
+                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
+                    alt="previous"
+                  />
                 </button>
                 <BoxPicturesContainer
                   boxes={[
@@ -701,7 +742,11 @@ export const CreatePictureView = () => {
             {optionSelected.size !== "" && optionSelected.oneOrMultipleImages === "one" && (
               <div className="createPicture-box-show-img">
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
+                  <img
+                    className="createPicture-svg"
+                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
+                    alt="previous"
+                  />
                 </button>
                 <div className="createPicture-span-btn-file">
                   <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
@@ -739,7 +784,11 @@ export const CreatePictureView = () => {
             {optionSelected.oneOrMultipleImages === "" && (
               <>
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
+                  <img
+                    className="createPicture-svg"
+                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
+                    alt="previous"
+                  />
                 </button>
                 <BoxPicturesContainer
                   boxes={[
@@ -771,7 +820,11 @@ export const CreatePictureView = () => {
                   className="createPicture-btn-previus"
                   onClick={() => handleOptionSelected("oneOrMultipleImages", "")}
                 >
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
+                  <img
+                    className="createPicture-svg"
+                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
+                    alt="previous"
+                  />
                 </button>
                 <BoxPicturesContainer
                   boxes={[
@@ -807,7 +860,11 @@ export const CreatePictureView = () => {
             {optionSelected.size !== "" && optionSelected.oneOrMultipleImages === "one" && (
               <div className="createPicture-box-show-img">
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
+                  <img
+                    className="createPicture-svg"
+                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
+                    alt="previous"
+                  />
                 </button>
                 <div className="createPicture-span-btn-file">
                   <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
@@ -843,7 +900,11 @@ export const CreatePictureView = () => {
         {optionSelected.distribution === "custom" && (
           <div className="createPicture-box-show-img">
             <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-              <img className="createPicture-svg" src={arrowLeft} alt="previous" />
+              <img
+                className="createPicture-svg"
+                src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
+                alt="previous"
+              />
             </button>
             <div className="createPicture-span-btn-file">
               <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
@@ -885,9 +946,9 @@ export const CreatePictureView = () => {
                   ))}
               </div>
               <div className="createPicture-container-frames z-index-20 overflow-visible">
-                {picturesPlaced.length &&
-                  picturesPlaced?.map(({ width, height, left, top }) => (
-                    <>
+                {picturesPlaced.length > 0 &&
+                  picturesPlaced?.map(({ width, height, left, top }, i) => (
+                    <div key={i}>
                       <p
                         className="image-cropped-width"
                         style={{
@@ -918,11 +979,19 @@ export const CreatePictureView = () => {
                       >
                         {Math.round(top * 1.35)}cm
                       </p>
-                    </>
+                    </div>
                   ))}
               </div>
-              <img className="createPicture-image-frame-plant" alt="frame" src={copictiEmptyPlant} />
-              <img className="createPicture-image-frame" alt="frame" src={copictiEmpty} />
+              <img
+                className="createPicture-image-frame-plant"
+                alt="frame"
+                src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiEmptyPlant.webp?alt=media&token=804b5ffc-ed28-4f9a-bb78-297069b7c4d2"
+              />
+              <img
+                className="createPicture-image-frame"
+                alt="frame"
+                src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiEmpty.webp?alt=media&token=56fd57df-4930-45a8-99ba-2b253d3d6ebb"
+              />
             </div>
             {optionSelected.images.length > 0 && (
               <div className="createPicture-custom-container">
