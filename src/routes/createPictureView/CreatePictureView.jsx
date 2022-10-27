@@ -252,15 +252,15 @@ export const CreatePictureView = () => {
         )}
         {optionSelected.distribution === "polyptych" && (
           <>
-            <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-              <img
-                className="createPicture-svg"
-                src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
-                alt="previous"
-              />
-            </button>
             {optionSelected.oneOrMultipleImages === "" && (
               <>
+                <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
+                  <img
+                    className="createPicture-svg"
+                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
+                    alt="previous"
+                  />
+                </button>
                 <BoxPicturesContainer
                   boxes={[
                     {

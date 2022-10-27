@@ -484,10 +484,10 @@ input[type="number"] {
   .createPicture-btn-previus {
     border-radius: 0;
     left: 0;
-    margin: auto;
-    right: 0;
-    top: -64px;
-    width: 128px;
+    margin: 0 0px 8px 0;
+    position: relative;
+    top: 0;
+    width: 30%;
   }
 
   .createPicture-box-show-img {
