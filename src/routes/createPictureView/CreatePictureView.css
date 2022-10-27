@@ -237,9 +237,8 @@
   align-items: center;
   aspect-ratio: 16/9;
   background-color: var(--color-1);
-  border-radius: 6px 6px 0 0;
   display: flex;
-  height: 100%;
+  height: auto;
   justify-content: center;
   position: relative;
   transition: all 0.3s ease;
@@ -506,7 +505,7 @@ input[type="number"] {
   }
 
   .createPicture-image-final {
-    height: 500px;
+    height: 50.6vw;
   }
 
   .image-cropped-width {
