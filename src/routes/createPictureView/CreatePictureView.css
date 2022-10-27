@@ -497,7 +497,6 @@ input[type="number"] {
     font-size: 12px;
     padding: 24px 0;
     text-align: center;
-    min-height: 70vh;
   }
 
   .createPicture-btn-file {
