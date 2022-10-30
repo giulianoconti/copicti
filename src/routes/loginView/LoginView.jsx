@@ -1,41 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { GoogleAuthProvider, onAuthStateChanged, signInWithPopup } from "firebase/auth";
-import { auth } from "../../firebase/firebase";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import { useAuth } from "../../context/authContext";
+import googleIcon from "../../assets/googleIcon.svg";
 import "./LoginView.css";
+import "../../stylesGlobal.css";
+import { IsLoading } from "../../components/isLoading/IsLoading";
 
 export const LoginView = () => {
-  const [isLogged, setIsLogged] = useState(true);
-  const [userInfo, setUserInfo] = useState({});
-  const navigate = useNavigate();
+  const { loginWithGoogle, userInfo, logout, loadingUser } = useAuth();
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setIsLogged(true);
-        setUserInfo(user);
-      } else {
-        setIsLogged(false);
-      }
-    });
-  }, []);
+  if (loadingUser)
+    return (
+      <div className="login-screen">
+        <div className="login-container">
+          <IsLoading />
+        </div>
+      </div>
+    );
 
-  const loginWithGoogle = async () => {
-    const googleProvider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (error) {
-      console.error(error);
-    }
-    navigate("/");
-  };
-
-  const logout = () => {
-    navigate("/");
-    auth.signOut();
-  };
-
-  if (isLogged) {
+  if (userInfo) {
     return (
       <div className="login-screen">
         <div className="login-container">
@@ -50,7 +32,18 @@ export const LoginView = () => {
         </div>
       </div>
     );
-  } else {
-    loginWithGoogle();
-  }
+  } else
+    return (
+      <div className="login-screen">
+        <div className="login-container">
+          <hr className="login-hr" />
+          <h3 className="login-alert-text">You need to be registered to use some functions</h3>
+          <button className="login-btn-google" onClick={loginWithGoogle}>
+            <img className="login-btn-icon" src={googleIcon} alt="google icon" />
+            Login with Google
+          </button>
+          <hr className="login-hr" />
+        </div>
+      </div>
+    );
 };

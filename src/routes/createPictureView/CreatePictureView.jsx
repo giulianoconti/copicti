@@ -1,43 +1,50 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { BoxPicturesContainer } from "../../components/boxPicturesContainer/BoxPicturesContainer";
 import { IsLoading } from "../../components/isLoading/IsLoading";
+import arrowLeft from "../../assets/arrow-left.svg";
+import polyptychL from "../../assets/copictiPolyptychL.webp";
+import polyptychM from "../../assets/copictiPolyptychM.webp";
+import polyptychS from "../../assets/copictiPolyptychS.webp";
+import polyptychSameHeightL from "../../assets/copictiPolyptychSameHeightL.webp";
+import polyptychSameHeightM from "../../assets/copictiPolyptychSameHeightM.webp";
+import polyptychSameHeightS from "../../assets/copictiPolyptychSameHeightS.webp";
+import triptychL from "../../assets/copictiTriptychL.webp";
+import triptychM from "../../assets/copictiTriptychM.webp";
+import triptychS from "../../assets/copictiTriptychS.webp";
+import triptychSquareL from "../../assets/copictiTriptychLSquare.webp";
+import triptychSquareM from "../../assets/copictiTriptychMSquare.webp";
+import triptychSquareS from "../../assets/copictiTriptychSSquare.webp";
+import triptychCircularL from "../../assets/copictiTriptychLCircular.webp";
+import triptychCircularM from "../../assets/copictiTriptychMCircular.webp";
+import triptychCircularS from "../../assets/copictiTriptychSCircular.webp";
+import customEmpty from "../../assets/copictiEmpty.webp";
+import customEmptyPlant from "../../assets/copictiEmptyPlant.webp";
+import html2canvas from "html2canvas";
+import { postImageInStorage, postUserOrder } from "../../firebase/firebase";
 import "./CreatePictureView.css";
 import "../../stylesGlobal.css";
+import { useAuth } from "../../context/authContext";
 
 const allCopictiImages = {
-  polyptychL:
-    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiPolyptychL.webp?alt=media&token=e481800f-288c-4362-83e5-ff05091fd735",
-  polyptychM:
-    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiPolyptychM.webp?alt=media&token=10e2b05c-59aa-40cf-89c9-1fe370a234a1",
-  polyptychS:
-    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiPolyptychS.webp?alt=media&token=34515933-e4d4-4a4d-b8ff-4144bc9c7aef",
-  polyptychSameHeightL:
-    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiPolyptychSameHeightL.webp?alt=media&token=1947041f-bb0e-433e-b0dc-3048b7e85e4c",
-  polyptychSameHeightM:
-    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiPolyptychSameHeightM.webp?alt=media&token=8b3c4ddd-4f3f-4d8e-941a-a0f1aaf0ff79",
-  polyptychSameHeightS:
-    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiPolyptychSameHeightS.webp?alt=media&token=f088a3df-0a46-46ea-b112-b3e6bba30852",
-  triptychL:
-    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiTriptychL.webp?alt=media&token=d6aea274-5e09-494c-ac6e-3f9ffe32b815",
-  triptychM:
-    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiTriptychM.webp?alt=media&token=66016cbb-b0c0-4b0e-ae6c-a5729adb5751",
-  triptychS:
-    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiTriptychS.webp?alt=media&token=d0144544-0eb3-4299-81f4-dca1e4c8a1ef",
-  triptychSquareL:
-    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiTriptychLSquare.webp?alt=media&token=e8f3befa-a19d-4b57-a0d6-ed969c6790af",
-  triptychSquareM:
-    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiTriptychMSquare.webp?alt=media&token=a1657553-c835-4e07-ba6e-9ddb7ba06628",
-  triptychSquareS:
-    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiTriptychSSquare.webp?alt=media&token=6b237a3e-3dfe-4e64-bb27-828b1a845678",
-  triptychCircularL:
-    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiTriptychLCircular.webp?alt=media&token=0969996c-7cc1-4112-b715-a87246411363",
-  triptychCircularM:
-    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiTriptychMCircular.webp?alt=media&token=47070bdc-28ef-4677-850e-8f512b34b2a8",
-  triptychCircularS:
-    "https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiTriptychSCircular.webp?alt=media&token=8ef8ad84-ebad-48d6-aa9a-59a82b71d9aa",
+  polyptychL,
+  polyptychM,
+  polyptychS,
+  polyptychSameHeightL,
+  polyptychSameHeightM,
+  polyptychSameHeightS,
+  triptychL,
+  triptychM,
+  triptychS,
+  triptychSquareL,
+  triptychSquareM,
+  triptychSquareS,
+  triptychCircularL,
+  triptychCircularM,
+  triptychCircularS,
 };
 
 export const CreatePictureView = () => {
+  const containerImgsRef = useRef();
   const [isLoading, setIsLoading] = useState(true);
   const [optionSelected, setOptionSelected] = useState({
     background: "",
@@ -46,9 +53,9 @@ export const CreatePictureView = () => {
     oneOrMultipleImages: "",
     size: "",
   });
-
   /*   min-left: 3.1% | min-top: 2.67% |          10cm === 4.65% width === 6.35% height   */
   const [picturesPlaced, setPicturesPlaced] = useState([]);
+  const { loginWithGoogle, userInfo } = useAuth();
 
   useEffect(() => {
     /* when changing the background, the loading screen starts until it finishes loading */
@@ -160,24 +167,85 @@ export const CreatePictureView = () => {
   };
 
   const handleOptionSelected = (key, value) => {
+    /*  console.log(value); */
     setOptionSelected({
       ...optionSelected,
       [key]: value,
     });
   };
 
-  const handleFileUpload = (e) => {
-    if (e.target.files.length > 0) {
-      if (e.target.files[0].type.includes("image/")) {
-        const reader = new FileReader();
-        reader.readAsDataURL(e.target.files[0]);
-        reader.onload = () => {
-          handleOptionSelected("images", [reader.result]);
+  const handleFileUpload = ({ target: { files } }) => {
+    if (files.length <= 1 && files[0].type.includes("image/")) {
+      /* transform to .webp */
+      const reader = new FileReader();
+      reader.readAsDataURL(files[0]);
+      reader.onload = () => {
+        const img = new Image();
+        img.src = reader.result;
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          canvas.width = img.width;
+          canvas.height = img.height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0);
+          const dataURL = canvas.toDataURL("image/webp");
+          handleOptionSelected("images", [dataURL]);
         };
-      } else {
-        alert("Please upload an image file");
-      }
+      };
+      containerImgsRef.current.name = files[0].name.split(".")[0];
+    } else {
+      alert("Please upload an image file");
     }
+  };
+
+  /* download the living room with the pictures placed */
+  const uploadThisSection = async () => {
+    if (userInfo?.email) {
+      /* create custom id */
+      const id = `${userInfo?.email.split("@")[0]}-${Date.now()}`;
+      let scale = 1;
+      if (containerImgsRef.current.lastChild.width < 864) {
+        scale = 864 / containerImgsRef.current.lastChild.width;
+      }
+      html2canvas(containerImgsRef.current, {
+        scale,
+        willReadFrequently: true,
+      }).then(async (canvas) => {
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/webp");
+        const uploadedImageTransform = transformBase64ToFile(optionSelected.images[0], id);
+        const uploadedImageLink = await postImageInStorage(uploadedImageTransform);
+        const pictureDistributionTransform = transformBase64ToFile(link.href, id + "_distribution");
+        const pictureDistributionLink = await postImageInStorage(pictureDistributionTransform);
+        const distributionSelected =
+          optionSelected.distribution === "custom" ? "custom" : optionSelected.distribution + "_" + optionSelected.size;
+        postUserOrder({
+          email: userInfo.email,
+          order: {
+            id: id,
+            name: containerImgsRef.current.name,
+            uploadedImage: uploadedImageLink,
+            pictureDistribution: pictureDistributionLink,
+            distributionSelected: distributionSelected,
+          },
+        });
+      });
+    } else {
+      loginWithGoogle();
+    }
+  };
+
+  const transformBase64ToFile = (base64, fileName) => {
+    /*  console.log(base64); */
+    const arr = base64.split(",");
+    const mime = arr[0].match(/:(.*?);/)[1];
+    const bstr = atob(arr[1]);
+    let n = bstr.length;
+    const u8arr = new Uint8Array(n);
+    while (n--) {
+      u8arr[n] = bstr.charCodeAt(n);
+    }
+    return new File([u8arr], fileName, { type: mime });
   };
 
   if (isLoading)
@@ -192,6 +260,8 @@ export const CreatePictureView = () => {
   return (
     <div className="createPicture-screen">
       <div className="createPicture-container">
+        <button onClick={uploadThisSection}>download</button>
+        <button onClick={() => console.log(optionSelected.imageFile)}>test</button>
         {optionSelected.distribution === "" && (
           <>
             <h1 className="createPicture-title">Choose the distribution of images you want</h1>
@@ -255,11 +325,7 @@ export const CreatePictureView = () => {
             {optionSelected.oneOrMultipleImages === "" && (
               <>
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-                  <img
-                    className="createPicture-svg"
-                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
-                    alt="previous"
-                  />
+                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <BoxPicturesContainer
                   boxes={[
@@ -291,11 +357,7 @@ export const CreatePictureView = () => {
                   className="createPicture-btn-previus"
                   onClick={() => handleOptionSelected("oneOrMultipleImages", "")}
                 >
-                  <img
-                    className="createPicture-svg"
-                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
-                    alt="previous"
-                  />
+                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <BoxPicturesContainer
                   boxes={[
@@ -349,14 +411,10 @@ export const CreatePictureView = () => {
             {optionSelected.size !== "" && optionSelected.oneOrMultipleImages === "one" && (
               <div className="createPicture-box-show-img">
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
-                  <img
-                    className="createPicture-svg"
-                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
-                    alt="previous"
-                  />
+                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <div className="createPicture-span-btn-file">
-                  <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
+                  <span className="createPicture-span">Recommended Aspect Ratio 4K</span>
                   <label className="w-20">
                     <input className="d-none" type="file" onChange={handleFileUpload} />
                     <span
@@ -368,15 +426,13 @@ export const CreatePictureView = () => {
                     </span>
                   </label>
                 </div>
-                <div className="createPicture-image-final">
+                <div className="createPicture-image-final" ref={containerImgsRef}>
                   {optionSelected.images[0] && (
                     <img
-                      className={`createPicture-image-uploaded 
-                        ${optionSelected.size === "large" ? "wh-81" : ""} 
-                        ${optionSelected.size === "medium" ? "wh-71" : ""} 
-                        ${optionSelected.size === "small" ? "wh-61" : ""}`}
+                      className={`createPicture-image-uploaded ${optionSelected.size === "large" ? "wh-81" : ""} ${
+                        optionSelected.size === "medium" ? "wh-71" : ""
+                      } ${optionSelected.size === "small" ? "wh-61" : ""}`}
                       alt="select image"
-                      id="canvas"
                       src={optionSelected.images[0]}
                     />
                   )}
@@ -391,11 +447,7 @@ export const CreatePictureView = () => {
             {optionSelected.oneOrMultipleImages === "" && (
               <>
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-                  <img
-                    className="createPicture-svg"
-                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
-                    alt="previous"
-                  />
+                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <BoxPicturesContainer
                   boxes={[
@@ -427,11 +479,7 @@ export const CreatePictureView = () => {
                   className="createPicture-btn-previus"
                   onClick={() => handleOptionSelected("oneOrMultipleImages", "")}
                 >
-                  <img
-                    className="createPicture-svg"
-                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
-                    alt="previous"
-                  />
+                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <BoxPicturesContainer
                   boxes={[
@@ -482,14 +530,10 @@ export const CreatePictureView = () => {
             {optionSelected.size !== "" && optionSelected.oneOrMultipleImages === "one" && (
               <div className="createPicture-box-show-img">
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
-                  <img
-                    className="createPicture-svg"
-                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
-                    alt="previous"
-                  />
+                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <div className="createPicture-span-btn-file">
-                  <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
+                  <span className="createPicture-span">Recommended Aspect Ratio 4K</span>
                   <label className="w-20">
                     <input className="d-none" type="file" onChange={handleFileUpload} />
                     <span
@@ -501,15 +545,13 @@ export const CreatePictureView = () => {
                     </span>
                   </label>
                 </div>
-                <div className="createPicture-image-final">
+                <div className="createPicture-image-final" ref={containerImgsRef}>
                   {optionSelected.images[0] && (
                     <img
-                      className={`createPicture-image-uploaded 
-                    ${optionSelected.size === "large" ? "wh-81" : ""} 
-                    ${optionSelected.size === "medium" ? "wh-71" : ""} 
-                    ${optionSelected.size === "small" ? "wh-61" : ""}`}
+                      className={`createPicture-image-uploaded ${optionSelected.size === "large" ? "wh-81" : ""} ${
+                        optionSelected.size === "medium" ? "wh-71" : ""
+                      } ${optionSelected.size === "small" ? "wh-61" : ""}`}
                       alt="select image"
-                      id="canvas"
                       src={optionSelected.images[0]}
                     />
                   )}
@@ -524,11 +566,7 @@ export const CreatePictureView = () => {
             {optionSelected.oneOrMultipleImages === "" && (
               <>
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-                  <img
-                    className="createPicture-svg"
-                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
-                    alt="previous"
-                  />
+                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <BoxPicturesContainer
                   boxes={[
@@ -560,11 +598,7 @@ export const CreatePictureView = () => {
                   className="createPicture-btn-previus"
                   onClick={() => handleOptionSelected("oneOrMultipleImages", "")}
                 >
-                  <img
-                    className="createPicture-svg"
-                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
-                    alt="previous"
-                  />
+                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <BoxPicturesContainer
                   boxes={[
@@ -612,14 +646,10 @@ export const CreatePictureView = () => {
             {optionSelected.size !== "" && optionSelected.oneOrMultipleImages === "one" && (
               <div className="createPicture-box-show-img">
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
-                  <img
-                    className="createPicture-svg"
-                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
-                    alt="previous"
-                  />
+                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <div className="createPicture-span-btn-file">
-                  <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
+                  <span className="createPicture-span">Recommended Aspect Ratio 4K</span>
                   <label className="w-20">
                     <input className="d-none" type="file" onChange={handleFileUpload} />
                     <span
@@ -631,15 +661,13 @@ export const CreatePictureView = () => {
                     </span>
                   </label>
                 </div>
-                <div className="createPicture-image-final">
+                <div className="createPicture-image-final" ref={containerImgsRef}>
                   {optionSelected.images[0] && (
                     <img
-                      className={`createPicture-image-uploaded 
-                    ${optionSelected.size === "large" ? "wh-81" : ""} 
-                    ${optionSelected.size === "medium" ? "wh-71" : ""} 
-                    ${optionSelected.size === "small" ? "wh-61" : ""}`}
+                      className={`createPicture-image-uploaded ${optionSelected.size === "large" ? "wh-81" : ""} ${
+                        optionSelected.size === "medium" ? "wh-71" : ""
+                      } ${optionSelected.size === "small" ? "wh-61" : ""}`}
                       alt="select image"
-                      id="canvas"
                       src={optionSelected.images[0]}
                     />
                   )}
@@ -654,11 +682,7 @@ export const CreatePictureView = () => {
             {optionSelected.oneOrMultipleImages === "" && (
               <>
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-                  <img
-                    className="createPicture-svg"
-                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
-                    alt="previous"
-                  />
+                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <BoxPicturesContainer
                   boxes={[
@@ -690,11 +714,7 @@ export const CreatePictureView = () => {
                   className="createPicture-btn-previus"
                   onClick={() => handleOptionSelected("oneOrMultipleImages", "")}
                 >
-                  <img
-                    className="createPicture-svg"
-                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
-                    alt="previous"
-                  />
+                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <BoxPicturesContainer
                   boxes={[
@@ -742,14 +762,10 @@ export const CreatePictureView = () => {
             {optionSelected.size !== "" && optionSelected.oneOrMultipleImages === "one" && (
               <div className="createPicture-box-show-img">
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
-                  <img
-                    className="createPicture-svg"
-                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
-                    alt="previous"
-                  />
+                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <div className="createPicture-span-btn-file">
-                  <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
+                  <span className="createPicture-span">Recommended Aspect Ratio 4K</span>
                   <label className="w-20">
                     <input className="d-none" type="file" onChange={handleFileUpload} />
                     <span
@@ -761,15 +777,13 @@ export const CreatePictureView = () => {
                     </span>
                   </label>
                 </div>
-                <div className="createPicture-image-final">
+                <div className="createPicture-image-final" ref={containerImgsRef}>
                   {optionSelected.images[0] && (
                     <img
-                      className={`createPicture-image-uploaded 
-                    ${optionSelected.size === "large" ? "wh-81" : ""} 
-                    ${optionSelected.size === "medium" ? "wh-71" : ""} 
-                    ${optionSelected.size === "small" ? "wh-61" : ""}`}
+                      className={`createPicture-image-uploaded ${optionSelected.size === "large" ? "wh-81" : ""} ${
+                        optionSelected.size === "medium" ? "wh-71" : ""
+                      } ${optionSelected.size === "small" ? "wh-61" : ""}`}
                       alt="select image"
-                      id="canvas"
                       src={optionSelected.images[0]}
                     />
                   )}
@@ -784,11 +798,7 @@ export const CreatePictureView = () => {
             {optionSelected.oneOrMultipleImages === "" && (
               <>
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-                  <img
-                    className="createPicture-svg"
-                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
-                    alt="previous"
-                  />
+                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <BoxPicturesContainer
                   boxes={[
@@ -820,11 +830,7 @@ export const CreatePictureView = () => {
                   className="createPicture-btn-previus"
                   onClick={() => handleOptionSelected("oneOrMultipleImages", "")}
                 >
-                  <img
-                    className="createPicture-svg"
-                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
-                    alt="previous"
-                  />
+                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <BoxPicturesContainer
                   boxes={[
@@ -860,14 +866,10 @@ export const CreatePictureView = () => {
             {optionSelected.size !== "" && optionSelected.oneOrMultipleImages === "one" && (
               <div className="createPicture-box-show-img">
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
-                  <img
-                    className="createPicture-svg"
-                    src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
-                    alt="previous"
-                  />
+                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <div className="createPicture-span-btn-file">
-                  <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
+                  <span className="createPicture-span">Recommended Aspect Ratio 4K</span>
                   <label className="w-20">
                     <input className="d-none" type="file" onChange={handleFileUpload} />
                     <span
@@ -879,15 +881,13 @@ export const CreatePictureView = () => {
                     </span>
                   </label>
                 </div>
-                <div className="createPicture-image-final">
+                <div className="createPicture-image-final" ref={containerImgsRef}>
                   {optionSelected.images[0] && (
                     <img
-                      className={`createPicture-image-uploaded 
-                    ${optionSelected.size === "large" ? "wh-81" : ""} 
-                    ${optionSelected.size === "medium" ? "wh-71" : ""} 
-                    ${optionSelected.size === "small" ? "wh-61" : ""}`}
+                      className={`createPicture-image-uploaded ${optionSelected.size === "large" ? "wh-81" : ""} ${
+                        optionSelected.size === "medium" ? "wh-71" : ""
+                      } ${optionSelected.size === "small" ? "wh-61" : ""}`}
                       alt="select image"
-                      id="canvas"
                       src={optionSelected.images[0]}
                     />
                   )}
@@ -900,14 +900,10 @@ export const CreatePictureView = () => {
         {optionSelected.distribution === "custom" && (
           <div className="createPicture-box-show-img">
             <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-              <img
-                className="createPicture-svg"
-                src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2Farrow-left.svg?alt=media&token=bc6bba9d-8b10-4636-835c-63841937ada6"
-                alt="previous"
-              />
+              <img className="createPicture-svg" src={arrowLeft} alt="previous" />
             </button>
             <div className="createPicture-span-btn-file">
-              <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
+              <span className="createPicture-span">Recommended Aspect Ratio 4K</span>
               <label className="w-20">
                 <input className="d-none" type="file" onChange={handleFileUpload} />
                 <span
@@ -917,7 +913,7 @@ export const CreatePictureView = () => {
                 </span>
               </label>
             </div>
-            <div className="createPicture-image-final">
+            <div className="createPicture-image-final" ref={containerImgsRef}>
               <div className="createPicture-container-frames">
                 {picturesPlaced.length > 0 &&
                   picturesPlaced?.map((picture) => (
@@ -982,139 +978,135 @@ export const CreatePictureView = () => {
                     </div>
                   ))}
               </div>
-              <img
-                className="createPicture-image-frame-plant"
-                alt="frame"
-                src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiEmptyPlant.webp?alt=media&token=804b5ffc-ed28-4f9a-bb78-297069b7c4d2"
-              />
-              <img
-                className="createPicture-image-frame"
-                alt="frame"
-                src="https://firebasestorage.googleapis.com/v0/b/copic-12fe1.appspot.com/o/picturesApp%2FcopictiEmpty.webp?alt=media&token=56fd57df-4930-45a8-99ba-2b253d3d6ebb"
-              />
+              <img className="createPicture-image-frame-plant" alt="frame" src={customEmptyPlant} />
+              <img className="createPicture-image-frame" alt="frame" src={customEmpty} />
             </div>
             {optionSelected.images.length > 0 && (
               <div className="createPicture-custom-container">
                 <div className="createPicture-custom-buttons">
-                  <button className="createPicture-btn-file bg-red color-black" onClick={handleRemovePicture}>
-                    Remove Last Picture
-                  </button>
+                  {picturesPlaced.length > 0 && (
+                    <button className="createPicture-btn-file bg-red color-black" onClick={handleRemovePicture}>
+                      Remove Last Picture
+                    </button>
+                  )}
                   <button className="createPicture-btn-file bg-green color-black" onClick={handleAddPicture}>
                     Add New Picture
                   </button>
                 </div>
-                <div className="createPicture-custom-box-container">
-                  <div className="createPicture-custom-box">
-                    <h5 className="createPicture-custom-title color-light-blue">Width</h5>
-                    <input
-                      className="createPicture-input-range"
-                      type="range"
-                      min="0"
-                      max={100 - picturesPlaced[picturesPlaced.length - 1]?.left || ""}
-                      name="width"
-                      value={picturesPlaced[picturesPlaced.length - 1]?.width || ""}
-                      onChange={handleChangeOptionsPicture}
-                    />
-                    <input
-                      className="createPicture-input-number color-light-blue"
-                      type="number"
-                      name="width"
-                      min="0"
-                      max={100 - picturesPlaced[picturesPlaced.length - 1]?.left || ""}
-                      value={Math.round(picturesPlaced[picturesPlaced.length - 1]?.width * 2.4) || ""}
-                      onChange={handleChangeOptionsPicture}
-                    />
-                    <p className="createPicture-custom-text color-light-blue">cm</p>
+                {picturesPlaced.length > 0 && (
+                  <div className="createPicture-custom-box-container">
+                    <div className="createPicture-custom-box">
+                      <h5 className="createPicture-custom-title color-light-blue">Width</h5>
+                      <input
+                        className="createPicture-input-range"
+                        type="range"
+                        min="0"
+                        max={100 - picturesPlaced[picturesPlaced.length - 1]?.left || ""}
+                        name="width"
+                        value={picturesPlaced[picturesPlaced.length - 1]?.width || ""}
+                        onChange={handleChangeOptionsPicture}
+                      />
+                      <input
+                        className="createPicture-input-number color-light-blue"
+                        type="number"
+                        name="width"
+                        min="0"
+                        max={100 - picturesPlaced[picturesPlaced.length - 1]?.left || ""}
+                        value={Math.round(picturesPlaced[picturesPlaced.length - 1]?.width * 2.4) || ""}
+                        onChange={handleChangeOptionsPicture}
+                      />
+                      <p className="createPicture-custom-text color-light-blue">cm</p>
+                    </div>
+                    <div className="createPicture-custom-box">
+                      <h5 className="createPicture-custom-title color-light-yellow">Height</h5>
+                      <input
+                        className="createPicture-input-range"
+                        type="range"
+                        min="0"
+                        max={100 - picturesPlaced[picturesPlaced.length - 1]?.top || ""}
+                        name="height"
+                        value={picturesPlaced[picturesPlaced.length - 1]?.height || ""}
+                        onChange={handleChangeOptionsPicture}
+                      />
+                      <input
+                        className="createPicture-input-number color-light-yellow"
+                        type="number"
+                        name="height"
+                        min="0"
+                        max={100 - picturesPlaced[picturesPlaced.length - 1]?.top || ""}
+                        value={Math.round(picturesPlaced[picturesPlaced.length - 1]?.height * 1.35) || ""}
+                        onChange={handleChangeOptionsPicture}
+                      />
+                      <p className="createPicture-custom-text color-light-yellow">cm</p>
+                    </div>
+                    <div className="createPicture-custom-box">
+                      <h5 className="createPicture-custom-title color-light-pink">Left</h5>
+                      <input
+                        className="createPicture-input-range"
+                        type="range"
+                        min="0"
+                        max={99.9 - picturesPlaced[picturesPlaced.length - 1]?.width || ""}
+                        name="left"
+                        value={picturesPlaced[picturesPlaced.length - 1]?.left || ""}
+                        onChange={handleChangeOptionsPicture}
+                      />
+                      <input
+                        className="createPicture-input-number color-light-pink"
+                        type="number"
+                        name="left"
+                        min="0"
+                        max={99.9 - picturesPlaced[picturesPlaced.length - 1]?.width || ""}
+                        value={Math.round(picturesPlaced[picturesPlaced.length - 1]?.left * 2.4) || ""}
+                        onChange={handleChangeOptionsPicture}
+                      />
+                      <p className="createPicture-custom-text color-light-pink">cm</p>
+                    </div>
+                    <div className="createPicture-custom-box">
+                      <h5 className="createPicture-custom-title color-light-cyan">Top</h5>
+                      <input
+                        className="createPicture-input-range"
+                        type="range"
+                        min="0"
+                        max={99.9 - picturesPlaced[picturesPlaced.length - 1]?.height || ""}
+                        name="top"
+                        value={picturesPlaced[picturesPlaced.length - 1]?.top || ""}
+                        onChange={handleChangeOptionsPicture}
+                      />
+                      <input
+                        className="createPicture-input-number color-light-cyan"
+                        type="number"
+                        name="top"
+                        min="0"
+                        max={99.9 - picturesPlaced[picturesPlaced.length - 1]?.height || ""}
+                        value={Math.round(picturesPlaced[picturesPlaced.length - 1]?.top * 1.35) || ""}
+                        onChange={handleChangeOptionsPicture}
+                      />
+                      <p className="createPicture-custom-text color-light-cyan">cm</p>
+                    </div>
+                    <div className="createPicture-custom-box">
+                      <h5 className="createPicture-custom-title">Radius</h5>
+                      <input
+                        className="createPicture-input-range"
+                        type="range"
+                        min="0"
+                        max="50"
+                        name="borderRadius"
+                        value={picturesPlaced[picturesPlaced.length - 1]?.borderRadius || ""}
+                        onChange={handleChangeOptionsPicture}
+                      />
+                      <input
+                        className="createPicture-input-number"
+                        type="number"
+                        name="borderRadius"
+                        min="0"
+                        max="50"
+                        value={picturesPlaced[picturesPlaced.length - 1]?.borderRadius || ""}
+                        onChange={handleChangeOptionsPicture}
+                      />
+                      <p className="createPicture-custom-text">%</p>
+                    </div>
                   </div>
-                  <div className="createPicture-custom-box">
-                    <h5 className="createPicture-custom-title color-light-yellow">Height</h5>
-                    <input
-                      className="createPicture-input-range"
-                      type="range"
-                      min="0"
-                      max={100 - picturesPlaced[picturesPlaced.length - 1]?.top || ""}
-                      name="height"
-                      value={picturesPlaced[picturesPlaced.length - 1]?.height || ""}
-                      onChange={handleChangeOptionsPicture}
-                    />
-                    <input
-                      className="createPicture-input-number color-light-yellow"
-                      type="number"
-                      name="height"
-                      min="0"
-                      max={100 - picturesPlaced[picturesPlaced.length - 1]?.top || ""}
-                      value={Math.round(picturesPlaced[picturesPlaced.length - 1]?.height * 1.35) || ""}
-                      onChange={handleChangeOptionsPicture}
-                    />
-                    <p className="createPicture-custom-text color-light-yellow">cm</p>
-                  </div>
-                  <div className="createPicture-custom-box">
-                    <h5 className="createPicture-custom-title color-light-pink">Left</h5>
-                    <input
-                      className="createPicture-input-range"
-                      type="range"
-                      min="0"
-                      max={100 - picturesPlaced[picturesPlaced.length - 1]?.width || ""}
-                      name="left"
-                      value={picturesPlaced[picturesPlaced.length - 1]?.left || ""}
-                      onChange={handleChangeOptionsPicture}
-                    />
-                    <input
-                      className="createPicture-input-number color-light-pink"
-                      type="number"
-                      name="left"
-                      min="0"
-                      max={100 - picturesPlaced[picturesPlaced.length - 1]?.width || ""}
-                      value={Math.round(picturesPlaced[picturesPlaced.length - 1]?.left * 2.4) || ""}
-                      onChange={handleChangeOptionsPicture}
-                    />
-                    <p className="createPicture-custom-text color-light-pink">cm</p>
-                  </div>
-                  <div className="createPicture-custom-box">
-                    <h5 className="createPicture-custom-title color-light-cyan">Top</h5>
-                    <input
-                      className="createPicture-input-range"
-                      type="range"
-                      min="0"
-                      max={100 - picturesPlaced[picturesPlaced.length - 1]?.height || ""}
-                      name="top"
-                      value={picturesPlaced[picturesPlaced.length - 1]?.top || ""}
-                      onChange={handleChangeOptionsPicture}
-                    />
-                    <input
-                      className="createPicture-input-number color-light-cyan"
-                      type="number"
-                      name="top"
-                      min="0"
-                      max={100 - picturesPlaced[picturesPlaced.length - 1]?.height || ""}
-                      value={Math.round(picturesPlaced[picturesPlaced.length - 1]?.top * 1.35) || ""}
-                      onChange={handleChangeOptionsPicture}
-                    />
-                    <p className="createPicture-custom-text color-light-cyan">cm</p>
-                  </div>
-                  <div className="createPicture-custom-box">
-                    <h5 className="createPicture-custom-title">Radius</h5>
-                    <input
-                      className="createPicture-input-range"
-                      type="range"
-                      min="0"
-                      max="50"
-                      name="borderRadius"
-                      value={picturesPlaced[picturesPlaced.length - 1]?.borderRadius || ""}
-                      onChange={handleChangeOptionsPicture}
-                    />
-                    <input
-                      className="createPicture-input-number"
-                      type="number"
-                      name="borderRadius"
-                      min="0"
-                      max="50"
-                      value={picturesPlaced[picturesPlaced.length - 1]?.borderRadius || ""}
-                      onChange={handleChangeOptionsPicture}
-                    />
-                    <p className="createPicture-custom-text">%</p>
-                  </div>
-                </div>
+                )}
               </div>
             )}
           </div>
