@@ -3,32 +3,30 @@
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
+  display: flex;
+  justify-content: center;
   min-height: 100vh;
   width: 100%;
 }
 
 .home-container {
-  align-items: center;
   display: flex;
   justify-content: center;
-  margin: 0 auto;
   max-width: 1200px;
   padding-top: 96px;
   width: 100%;
 }
 
 .home-frame {
-  border-radius: 2px;
   box-shadow: -3px 3px 3px 0 rgba(0, 0, 0, 0.3);
   box-sizing: border-box;
   display: inline-block;
-  height: 350px;
+  height: 400px;
   margin: 0 8px;
-  padding: 8vmin;
   position: relative;
   text-align: center;
   transition: scale 0.3s ease;
-  width: 150px;
+  width: 200px;
 }
 
 .home-frame:hover {
@@ -51,29 +49,48 @@
 }
 
 .home-img {
-  border: solid 2px;
-  border-bottom-color: #ffe;
-  border-left-color: #eed;
-  border-right-color: #eed;
-  border-top-color: #ccb;
-  height: 100%;
-  width: 100%;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
   bottom: 0;
+  height: 100%;
+  left: 0;
   margin: auto;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 100%;
 }
 
 @media screen and (max-width: 768px) {
   .home-frame {
     height: 48vw;
-    margin: 0 8px;
+    margin: 0 1vw;
     width: 31vw;
+  }
+
+  .home-frame:hover {
+    scale: 1;
   }
 
   .home-frame-title {
     font-size: 10px;
+  }
+}
+
+@media (max-height: 512px) {
+  .home-container {
+    padding-top: 72px;
+  }
+
+  .home-frame {
+    height: 40vh;
+    margin: 0 1vw;
+    width: 20vh;
+  }
+
+  .home-frame:hover {
+    scale: 1;
+  }
+
+  .home-frame-title {
+    font-size: 6px;
   }
 }

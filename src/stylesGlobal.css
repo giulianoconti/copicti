@@ -1,3 +1,7 @@
+.align-center {
+  align-items: center;
+}
+
 .bg-1 {
   background-color: var(--color-1);
 }
@@ -20,18 +24,6 @@
 
 .bg-6 {
   background-color: var(--color-6);
-}
-
-.bg-green {
-  background-color: rgb(50, 255, 50);
-}
-
-.bg-red {
-  background-color: rgb(255, 50, 50);
-}
-
-.color-black {
-  color: rgb(0, 0, 0);
 }
 
 .color-cyan {
@@ -68,6 +60,10 @@
 
 .flex {
   display: flex;
+}
+
+.max-w-156 {
+  max-width: 156px;
 }
 
 .m-0 {
@@ -118,6 +114,10 @@
 .wh-81 {
   height: 81%;
   width: 81%;
+}
+
+.w-90 {
+  width: 90%;
 }
 
 .w-100 {

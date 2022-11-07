@@ -24,6 +24,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(
         <Route path="/products" element={<Navigate to="/products/all" />} />
         <Route path="/products/:products_id" element={<ProductsView />} />
         <Route path="/create-picture" element={<CreatePictureView />} />
+        <Route path="/create-picture/:distributionId" element={<CreatePictureView />} />
+        <Route path="/create-picture/:distributionId/:sizeId" element={<CreatePictureView />} />
         <Route path="/contact" element={<Contact />} />
         <Route
           path="/my-cart"

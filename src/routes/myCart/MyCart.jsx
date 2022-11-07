@@ -1,29 +1,40 @@
+import { async } from "@firebase/util";
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
 import { IsLoading } from "../../components/isLoading/IsLoading";
 import { useAuth } from "../../context/authContext";
-import { deletetThisUserOrder, getUserOrders } from "../../firebase/firebase";
+import { deleteThisUserOrder, getUserOrders } from "../../firebase/firebase";
 import "./MyCart.css";
 
 export const MyCart = () => {
   const { userInfo, loadingUser } = useAuth();
   const [order, setOrder] = useState([]);
+  const [isLoadingPage, setIsLoadingPage] = useState(true);
 
   useEffect(() => {
     if (userInfo && !loadingUser) {
       handleGetUserOrders();
     }
-  }, []);
+  }, [userInfo]);
 
   const handleGetUserOrders = async () => {
     if (!loadingUser && userInfo?.email) {
       const userOrders = await getUserOrders(userInfo.email);
       setOrder(userOrders);
+      setIsLoadingPage(false);
+    } else {
+      setIsLoadingPage(false);
     }
   };
 
-  if (loadingUser || !userInfo || order.length === 0)
+  const deleteItem = async (email, name, id) => {
+    setIsLoadingPage(true);
+    await deleteThisUserOrder(email, name, id);
+    handleGetUserOrders();
+  };
+
+  if (loadingUser || !userInfo || isLoadingPage)
     return (
       <div className="cart-screen">
         <div className="cart-container">
@@ -43,15 +54,13 @@ export const MyCart = () => {
               <div className="cart-item-info">
                 <h2 className="cart-item-name">{item.name}</h2>
                 <h2 className="cart-item-text">Distribution: {item?.distributionSelected}</h2>
-                <button
-                  className="cart-item-btn"
-                  onClick={() => deletetThisUserOrder(userInfo.email, item.name, item.id)}
-                >
+                <button className="cart-item-btn" onClick={() => deleteItem(userInfo.email, item.name, item.id)}>
                   Remove
                 </button>
               </div>
             </div>
           ))}
+          {order.length === 0 && <p className="cart-empty">Your cart is empty</p>}
         </div>
       </div>
     </div>

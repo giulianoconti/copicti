@@ -83,6 +83,20 @@ export const postUserOrder = async (data) => {
   }
 };
 
+/* save the user images in the images folder of the firebase storage */
+export const postImageInStorage = async (file) => {
+  /*  console.log(file) */
+  if (file) {
+    const storageRef = ref(storage, "images/" + file.name);
+    const snapshot = await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(snapshot.ref);
+    console.log("File available at", url);
+    return url;
+  } else {
+    console.log("No file provided");
+  }
+};
+
 export const getUserOrders = async (email) => {
   const user = await getDoc(doc(db, "users", email));
   if (user.exists()) {
@@ -92,7 +106,7 @@ export const getUserOrders = async (email) => {
   }
 };
 
-export const deletetThisUserOrder = async (email, orderName, id) => {
+export const deleteThisUserOrder = async (email, orderName, id) => {
   const user = await getDoc(doc(db, "users", email));
   if (user.exists()) {
     const newOrders = user.data().orders.filter((userOrder) => userOrder.name !== orderName);
@@ -113,18 +127,4 @@ export const deleteThisImageOfThisOrder = async (id) => {
   const imageRef2 = ref(storage, "images/" + imageName2);
   await deleteObject(imageRef1);
   await deleteObject(imageRef2);
-};
-
-/* save the user images in the images folder of the firebase storage */
-export const postImageInStorage = async (file) => {
-  /*  console.log(file) */
-  if (file) {
-    const storageRef = ref(storage, "images/" + file.name);
-    const snapshot = await uploadBytes(storageRef, file);
-    const url = await getDownloadURL(snapshot.ref);
-    console.log("File available at", url);
-    return url;
-  } else {
-    console.log("No file provided");
-  }
 };

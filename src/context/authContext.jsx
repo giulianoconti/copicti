@@ -1,7 +1,7 @@
-import React from "react";
-import { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../firebase/firebase";
 import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import homeFrameFull from "../assets/homeFrameFull.webp";
 import PropTypes from "prop-types";
 
 export const authContext = createContext();
@@ -15,6 +15,10 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
+  const [images, setImages] = useState({
+    imageUploaded: homeFrameFull,
+    imageDistribution: "",
+  });
 
   const loginWithGoogle = async () => {
     const googleProvider = new GoogleAuthProvider();
@@ -25,7 +29,13 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => auth.signOut();
+  const logout = async () => {
+    try {
+      await auth.signOut();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -36,7 +46,9 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <authContext.Provider value={{ loginWithGoogle, userInfo, logout, loadingUser }}>{children}</authContext.Provider>
+    <authContext.Provider value={{ loginWithGoogle, userInfo, logout, loadingUser, images, setImages }}>
+      {children}
+    </authContext.Provider>
   );
 };
 

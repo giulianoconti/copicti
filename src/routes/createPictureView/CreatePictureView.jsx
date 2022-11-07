@@ -19,11 +19,13 @@ import triptychCircularM from "../../assets/copictiTriptychMCircular.webp";
 import triptychCircularS from "../../assets/copictiTriptychSCircular.webp";
 import customEmpty from "../../assets/copictiEmpty.webp";
 import customEmptyPlant from "../../assets/copictiEmptyPlant.webp";
+import homeFrameFull from "../../assets/homeFrameFull.webp";
 import html2canvas from "html2canvas";
 import { postImageInStorage, postUserOrder } from "../../firebase/firebase";
+import { useAuth } from "../../context/authContext";
+import { useNavigate, useParams } from "react-router-dom";
 import "./CreatePictureView.css";
 import "../../stylesGlobal.css";
-import { useAuth } from "../../context/authContext";
 
 const allCopictiImages = {
   polyptychL,
@@ -41,39 +43,36 @@ const allCopictiImages = {
   triptychCircularL,
   triptychCircularM,
   triptychCircularS,
+  custom: customEmpty,
 };
 
 export const CreatePictureView = () => {
   const containerImgsRef = useRef();
-  const [isLoading, setIsLoading] = useState(true);
-  const [optionSelected, setOptionSelected] = useState({
-    background: "",
-    distribution: "",
-    images: [],
-    oneOrMultipleImages: "",
-    size: "",
-  });
+  const navigate = useNavigate();
+  const { distributionId, sizeId } = useParams();
+  const [isLoading, setIsLoading] = useState(false);
+
   /*   min-left: 3.1% | min-top: 2.67% |          10cm === 4.65% width === 6.35% height   */
   const [picturesPlaced, setPicturesPlaced] = useState([]);
-  const { loginWithGoogle, userInfo } = useAuth();
+  const { loginWithGoogle, userInfo, images, setImages } = useAuth();
 
   useEffect(() => {
     /* when changing the background, the loading screen starts until it finishes loading */
-    if (optionSelected.size !== "") {
+    if (sizeId !== undefined || distributionId === "custom") {
       setIsLoading(true);
-      handleOptionSelected(
-        "background",
-        allCopictiImages[optionSelected?.distribution + optionSelected?.size[0]?.toUpperCase()]
-      );
-      const loadCopictiImage = new Image();
-      loadCopictiImage.src = allCopictiImages[optionSelected?.distribution + optionSelected.size[0]?.toUpperCase()];
-      loadCopictiImage.onload = () => {
+      setImages({
+        ...images,
+        imageDistribution: allCopictiImages[distributionId + (sizeId !== undefined ? sizeId[0]?.toUpperCase() : "")],
+      });
+      const imgDistribution = new Image();
+      imgDistribution.src = allCopictiImages[distributionId + (sizeId !== undefined ? sizeId[0]?.toUpperCase() : "")];
+      imgDistribution.onload = () => {
         setIsLoading(false);
       };
     } else {
       setIsLoading(false);
     }
-  }, [optionSelected.size]);
+  }, [distributionId, sizeId]);
 
   const handleAddPicture = () => {
     /* the first picture added is placed in the middle */
@@ -167,15 +166,16 @@ export const CreatePictureView = () => {
   };
 
   const handleOptionSelected = (key, value) => {
-    /*  console.log(value); */
-    setOptionSelected({
-      ...optionSelected,
-      [key]: value,
-    });
+    if (key === "distribution") {
+      navigate("/create-picture/" + value);
+    } else if (key === "size") {
+      navigate("/create-picture/" + distributionId + "/" + value);
+    }
   };
 
   const handleFileUpload = ({ target: { files } }) => {
     if (files.length <= 1 && files[0].type.includes("image/")) {
+      setIsLoading(true);
       /* transform to .webp */
       const reader = new FileReader();
       reader.readAsDataURL(files[0]);
@@ -189,10 +189,14 @@ export const CreatePictureView = () => {
           const ctx = canvas.getContext("2d");
           ctx.drawImage(img, 0, 0);
           const dataURL = canvas.toDataURL("image/webp");
-          handleOptionSelected("images", [dataURL]);
+          setImages({
+            ...images,
+            imageUploaded: dataURL,
+          });
         };
       };
       containerImgsRef.current.name = files[0].name.split(".")[0];
+      setIsLoading(false);
     } else {
       alert("Please upload an image file");
     }
@@ -213,22 +217,31 @@ export const CreatePictureView = () => {
       }).then(async (canvas) => {
         const link = document.createElement("a");
         link.href = canvas.toDataURL("image/webp");
-        const uploadedImageTransform = transformBase64ToFile(optionSelected.images[0], id);
-        const uploadedImageLink = await postImageInStorage(uploadedImageTransform);
-        const pictureDistributionTransform = transformBase64ToFile(link.href, id + "_distribution");
-        const pictureDistributionLink = await postImageInStorage(pictureDistributionTransform);
-        const distributionSelected =
-          optionSelected.distribution === "custom" ? "custom" : optionSelected.distribution + "_" + optionSelected.size;
-        postUserOrder({
-          email: userInfo.email,
-          order: {
-            id: id,
-            name: containerImgsRef.current.name,
-            uploadedImage: uploadedImageLink,
-            pictureDistribution: pictureDistributionLink,
-            distributionSelected: distributionSelected,
-          },
-        });
+        try {
+          const uploadedImageTransform = transformBase64ToFile(images.imageUploaded, id);
+          const uploadedImageLink = await postImageInStorage(uploadedImageTransform);
+          const pictureDistributionTransform = transformBase64ToFile(link.href, id + "_distribution");
+          const pictureDistributionLink = await postImageInStorage(pictureDistributionTransform);
+          const distributionSelected = distributionId === "custom" ? "custom" : distributionId + "_" + sizeId;
+          postUserOrder({
+            email: userInfo.email,
+            order: {
+              id: id,
+              name: containerImgsRef.current.name,
+              uploadedImage: uploadedImageLink,
+              pictureDistribution: pictureDistributionLink,
+              distributionSelected: distributionSelected,
+            },
+          })
+            .then(() => {
+              alert("Your order has been added to the cart");
+            })
+            .catch((error) => {
+              console.log(error);
+            });
+        } catch (error) {
+          console.log(error);
+        }
       });
     } else {
       loginWithGoogle();
@@ -236,7 +249,6 @@ export const CreatePictureView = () => {
   };
 
   const transformBase64ToFile = (base64, fileName) => {
-    /*  console.log(base64); */
     const arr = base64.split(",");
     const mime = arr[0].match(/:(.*?);/)[1];
     const bstr = atob(arr[1]);
@@ -260,9 +272,8 @@ export const CreatePictureView = () => {
   return (
     <div className="createPicture-screen">
       <div className="createPicture-container">
-        <button onClick={uploadThisSection}>download</button>
-        <button onClick={() => console.log(optionSelected.imageFile)}>test</button>
-        {optionSelected.distribution === "" && (
+        {/* <button onClick={() => console.log(optionSelected.imageFile)}>test</button> */}
+        {distributionId === undefined && (
           <>
             <h1 className="createPicture-title">Choose the distribution of images you want</h1>
             <BoxPicturesContainer
@@ -276,7 +287,7 @@ export const CreatePictureView = () => {
                   optionSelected: ["distribution", "polyptych"],
                 },
                 {
-                  title: "Polyptych with the same height",
+                  title: "Polyptych SH",
                   pictures: {
                     texts: [["3:8"], ["1:2"], ["3:8"], ["1:2"]],
                     sizes: ["ml", "l", "ml", "l"],
@@ -292,7 +303,7 @@ export const CreatePictureView = () => {
                   optionSelected: ["distribution", "triptych"],
                 },
                 {
-                  title: "Triptych with the same height and width",
+                  title: "Triptych square",
                   pictures: {
                     texts: [["1:1"], ["1:1"], ["1:1"]],
                     sizes: ["l-sq", "l-sq", "l-sq"],
@@ -300,7 +311,7 @@ export const CreatePictureView = () => {
                   optionSelected: ["distribution", "triptychSquare"],
                 },
                 {
-                  title: "Triptych with the same circular height and width",
+                  title: "Triptych circular",
                   pictures: {
                     texts: [["1:1"], ["1:1"], ["1:1"]],
                     sizes: ["l-cl", "l-cl", "l-cl"],
@@ -320,43 +331,11 @@ export const CreatePictureView = () => {
             />
           </>
         )}
-        {optionSelected.distribution === "polyptych" && (
+        {distributionId === "polyptych" && (
           <>
-            {optionSelected.oneOrMultipleImages === "" && (
+            {sizeId === undefined && (
               <>
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
-                </button>
-                <BoxPicturesContainer
-                  boxes={[
-                    {
-                      title: "One Image",
-                      pictures: {
-                        texts: [[], [], [], [], []],
-                        sizes: ["s", "m", "l", "m", "s"],
-                      },
-                      optionSelected: ["oneOrMultipleImages", "one"],
-                    },
-                    {
-                      title: "Multiple Image",
-                      pictures: {
-                        texts: [[], [], [], [], []],
-                        bg: ["bg-1", "bg-2", "bg-3", "bg-4", "bg-5"],
-                        sizes: ["s", "m", "l", "m", "s"],
-                      },
-                      optionSelected: ["oneOrMultipleImages", "multiple"],
-                    },
-                  ]}
-                  handleOptionSelected={handleOptionSelected}
-                />
-              </>
-            )}
-            {optionSelected.oneOrMultipleImages !== "" && optionSelected.size === "" && (
-              <>
-                <button
-                  className="createPicture-btn-previus"
-                  onClick={() => handleOptionSelected("oneOrMultipleImages", "")}
-                >
                   <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <BoxPicturesContainer
@@ -408,77 +387,45 @@ export const CreatePictureView = () => {
                 />
               </>
             )}
-            {optionSelected.size !== "" && optionSelected.oneOrMultipleImages === "one" && (
+            {sizeId !== undefined && (
               <div className="createPicture-box-show-img">
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
                   <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <div className="createPicture-span-btn-file">
-                  <span className="createPicture-span">Recommended Aspect Ratio 4K</span>
-                  <label className="w-20">
+                  <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
+                  <label
+                    className={
+                      images?.imageUploaded !== homeFrameFull
+                        ? "createPicture-btn-file max-w-156"
+                        : "createPicture-btn-file-center"
+                    }
+                  >
                     <input className="d-none" type="file" onChange={handleFileUpload} />
-                    <span
-                      className={
-                        optionSelected.images.length ? "createPicture-btn-file" : "createPicture-btn-file-center"
-                      }
-                    >
-                      Browse Image
-                    </span>
+                    <span>Browse Image</span>
                   </label>
                 </div>
                 <div className="createPicture-image-final" ref={containerImgsRef}>
-                  {optionSelected.images[0] && (
+                  {images?.imageDistribution && (
                     <img
-                      className={`createPicture-image-uploaded ${optionSelected.size === "large" ? "wh-81" : ""} ${
-                        optionSelected.size === "medium" ? "wh-71" : ""
-                      } ${optionSelected.size === "small" ? "wh-61" : ""}`}
+                      className={`createPicture-image-uploaded ${sizeId === "large" ? "wh-81" : ""} ${
+                        sizeId === "medium" ? "wh-71" : ""
+                      } ${sizeId === "small" ? "wh-61" : ""}`}
                       alt="select image"
-                      src={optionSelected.images[0]}
+                      src={images?.imageUploaded}
                     />
                   )}
-                  <img className="createPicture-image-frame" alt="frame" src={optionSelected.background} />
+                  <img className="createPicture-image-frame" alt="frame" src={images?.imageDistribution} />
                 </div>
               </div>
             )}
           </>
         )}
-        {optionSelected.distribution === "polyptychSameHeight" && (
+        {distributionId === "polyptychSameHeight" && (
           <>
-            {optionSelected.oneOrMultipleImages === "" && (
+            {sizeId === undefined && (
               <>
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
-                </button>
-                <BoxPicturesContainer
-                  boxes={[
-                    {
-                      title: "One Image",
-                      pictures: {
-                        texts: [[], [], [], []],
-                        sizes: ["ml", "l", "ml", "l"],
-                      },
-                      optionSelected: ["oneOrMultipleImages", "one"],
-                    },
-                    {
-                      title: "Multiple Image",
-                      pictures: {
-                        texts: [[], [], [], []],
-                        bg: ["bg-2", "bg-3", "bg-4", "bg-5"],
-                        sizes: ["ml", "l", "ml", "l"],
-                      },
-                      optionSelected: ["oneOrMultipleImages", "multiple"],
-                    },
-                  ]}
-                  handleOptionSelected={handleOptionSelected}
-                />
-              </>
-            )}
-            {optionSelected.oneOrMultipleImages !== "" && optionSelected.size === "" && (
-              <>
-                <button
-                  className="createPicture-btn-previus"
-                  onClick={() => handleOptionSelected("oneOrMultipleImages", "")}
-                >
                   <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <BoxPicturesContainer
@@ -527,77 +474,45 @@ export const CreatePictureView = () => {
                 />
               </>
             )}
-            {optionSelected.size !== "" && optionSelected.oneOrMultipleImages === "one" && (
+            {sizeId !== undefined && (
               <div className="createPicture-box-show-img">
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
                   <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <div className="createPicture-span-btn-file">
-                  <span className="createPicture-span">Recommended Aspect Ratio 4K</span>
-                  <label className="w-20">
+                  <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
+                  <label
+                    className={
+                      images?.imageUploaded !== homeFrameFull
+                        ? "createPicture-btn-file max-w-156"
+                        : "createPicture-btn-file-center"
+                    }
+                  >
                     <input className="d-none" type="file" onChange={handleFileUpload} />
-                    <span
-                      className={
-                        optionSelected.images.length ? "createPicture-btn-file" : "createPicture-btn-file-center"
-                      }
-                    >
-                      Browse Image
-                    </span>
+                    <span>Browse Image</span>
                   </label>
                 </div>
                 <div className="createPicture-image-final" ref={containerImgsRef}>
-                  {optionSelected.images[0] && (
+                  {images?.imageDistribution && (
                     <img
-                      className={`createPicture-image-uploaded ${optionSelected.size === "large" ? "wh-81" : ""} ${
-                        optionSelected.size === "medium" ? "wh-71" : ""
-                      } ${optionSelected.size === "small" ? "wh-61" : ""}`}
+                      className={`createPicture-image-uploaded ${sizeId === "large" ? "wh-81" : ""} ${
+                        sizeId === "medium" ? "wh-71" : ""
+                      } ${sizeId === "small" ? "wh-61" : ""}`}
                       alt="select image"
-                      src={optionSelected.images[0]}
+                      src={images?.imageUploaded}
                     />
                   )}
-                  <img className="createPicture-image-frame" alt="frame" src={optionSelected.background} />
+                  <img className="createPicture-image-frame" alt="frame" src={images?.imageDistribution} />
                 </div>
               </div>
             )}
           </>
         )}
-        {optionSelected.distribution === "triptych" && (
+        {distributionId === "triptych" && (
           <>
-            {optionSelected.oneOrMultipleImages === "" && (
+            {sizeId === undefined && (
               <>
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
-                </button>
-                <BoxPicturesContainer
-                  boxes={[
-                    {
-                      title: "One Image",
-                      pictures: {
-                        texts: [[], [], []],
-                        sizes: ["l", "l", "l"],
-                      },
-                      optionSelected: ["oneOrMultipleImages", "one"],
-                    },
-                    {
-                      title: "Multiple Image",
-                      pictures: {
-                        texts: [[], [], []],
-                        bg: ["bg-2", "bg-3", "bg-4"],
-                        sizes: ["l", "l", "l"],
-                      },
-                      optionSelected: ["oneOrMultipleImages", "multiple"],
-                    },
-                  ]}
-                  handleOptionSelected={handleOptionSelected}
-                />
-              </>
-            )}
-            {optionSelected.oneOrMultipleImages !== "" && optionSelected.size === "" && (
-              <>
-                <button
-                  className="createPicture-btn-previus"
-                  onClick={() => handleOptionSelected("oneOrMultipleImages", "")}
-                >
                   <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <BoxPicturesContainer
@@ -643,77 +558,45 @@ export const CreatePictureView = () => {
                 />
               </>
             )}
-            {optionSelected.size !== "" && optionSelected.oneOrMultipleImages === "one" && (
+            {sizeId !== undefined && (
               <div className="createPicture-box-show-img">
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
                   <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <div className="createPicture-span-btn-file">
-                  <span className="createPicture-span">Recommended Aspect Ratio 4K</span>
-                  <label className="w-20">
+                  <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
+                  <label
+                    className={
+                      images?.imageUploaded !== homeFrameFull
+                        ? "createPicture-btn-file max-w-156"
+                        : "createPicture-btn-file-center"
+                    }
+                  >
                     <input className="d-none" type="file" onChange={handleFileUpload} />
-                    <span
-                      className={
-                        optionSelected.images.length ? "createPicture-btn-file" : "createPicture-btn-file-center"
-                      }
-                    >
-                      Browse Image
-                    </span>
+                    <span>Browse Image</span>
                   </label>
                 </div>
                 <div className="createPicture-image-final" ref={containerImgsRef}>
-                  {optionSelected.images[0] && (
+                  {images?.imageDistribution && (
                     <img
-                      className={`createPicture-image-uploaded ${optionSelected.size === "large" ? "wh-81" : ""} ${
-                        optionSelected.size === "medium" ? "wh-71" : ""
-                      } ${optionSelected.size === "small" ? "wh-61" : ""}`}
+                      className={`createPicture-image-uploaded ${sizeId === "large" ? "wh-81" : ""} ${
+                        sizeId === "medium" ? "wh-71" : ""
+                      } ${sizeId === "small" ? "wh-61" : ""}`}
                       alt="select image"
-                      src={optionSelected.images[0]}
+                      src={images?.imageUploaded}
                     />
                   )}
-                  <img className="createPicture-image-frame" alt="frame" src={optionSelected.background} />
+                  <img className="createPicture-image-frame" alt="frame" src={images?.imageDistribution} />
                 </div>
               </div>
             )}
           </>
         )}
-        {optionSelected.distribution === "triptychSquare" && (
+        {distributionId === "triptychSquare" && (
           <>
-            {optionSelected.oneOrMultipleImages === "" && (
+            {sizeId === undefined && (
               <>
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
-                </button>
-                <BoxPicturesContainer
-                  boxes={[
-                    {
-                      title: "One Image",
-                      pictures: {
-                        texts: [[], [], []],
-                        sizes: ["l-sq", "l-sq", "l-sq"],
-                      },
-                      optionSelected: ["oneOrMultipleImages", "one"],
-                    },
-                    {
-                      title: "Multiple Image",
-                      pictures: {
-                        texts: [[], [], []],
-                        bg: ["bg-2", "bg-3", "bg-4"],
-                        sizes: ["l-sq", "l-sq", "l-sq"],
-                      },
-                      optionSelected: ["oneOrMultipleImages", "multiple"],
-                    },
-                  ]}
-                  handleOptionSelected={handleOptionSelected}
-                />
-              </>
-            )}
-            {optionSelected.oneOrMultipleImages !== "" && optionSelected.size === "" && (
-              <>
-                <button
-                  className="createPicture-btn-previus"
-                  onClick={() => handleOptionSelected("oneOrMultipleImages", "")}
-                >
                   <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <BoxPicturesContainer
@@ -759,77 +642,45 @@ export const CreatePictureView = () => {
                 />
               </>
             )}
-            {optionSelected.size !== "" && optionSelected.oneOrMultipleImages === "one" && (
+            {sizeId !== undefined && (
               <div className="createPicture-box-show-img">
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
                   <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <div className="createPicture-span-btn-file">
-                  <span className="createPicture-span">Recommended Aspect Ratio 4K</span>
-                  <label className="w-20">
+                  <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
+                  <label
+                    className={
+                      images?.imageUploaded !== homeFrameFull
+                        ? "createPicture-btn-file max-w-156"
+                        : "createPicture-btn-file-center"
+                    }
+                  >
                     <input className="d-none" type="file" onChange={handleFileUpload} />
-                    <span
-                      className={
-                        optionSelected.images.length ? "createPicture-btn-file" : "createPicture-btn-file-center"
-                      }
-                    >
-                      Browse Image
-                    </span>
+                    <span>Browse Image</span>
                   </label>
                 </div>
                 <div className="createPicture-image-final" ref={containerImgsRef}>
-                  {optionSelected.images[0] && (
+                  {images?.imageDistribution && (
                     <img
-                      className={`createPicture-image-uploaded ${optionSelected.size === "large" ? "wh-81" : ""} ${
-                        optionSelected.size === "medium" ? "wh-71" : ""
-                      } ${optionSelected.size === "small" ? "wh-61" : ""}`}
+                      className={`createPicture-image-uploaded ${sizeId === "large" ? "wh-81" : ""} ${
+                        sizeId === "medium" ? "wh-71" : ""
+                      } ${sizeId === "small" ? "wh-61" : ""}`}
                       alt="select image"
-                      src={optionSelected.images[0]}
+                      src={images?.imageUploaded}
                     />
                   )}
-                  <img className="createPicture-image-frame" alt="frame" src={optionSelected.background} />
+                  <img className="createPicture-image-frame" alt="frame" src={images?.imageDistribution} />
                 </div>
               </div>
             )}
           </>
         )}
-        {optionSelected.distribution === "triptychCircular" && (
+        {distributionId === "triptychCircular" && (
           <>
-            {optionSelected.oneOrMultipleImages === "" && (
+            {sizeId === undefined && (
               <>
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
-                </button>
-                <BoxPicturesContainer
-                  boxes={[
-                    {
-                      title: "One Image",
-                      pictures: {
-                        texts: [[], [], []],
-                        sizes: ["l-cl", "l-cl", "l-cl"],
-                      },
-                      optionSelected: ["oneOrMultipleImages", "one"],
-                    },
-                    {
-                      title: "Multiple Image",
-                      pictures: {
-                        texts: [[], [], []],
-                        bg: ["bg-2", "bg-3", "bg-4"],
-                        sizes: ["l-cl", "l-cl", "l-cl"],
-                      },
-                      optionSelected: ["oneOrMultipleImages", "multiple"],
-                    },
-                  ]}
-                  handleOptionSelected={handleOptionSelected}
-                />
-              </>
-            )}
-            {optionSelected.oneOrMultipleImages !== "" && optionSelected.size === "" && (
-              <>
-                <button
-                  className="createPicture-btn-previus"
-                  onClick={() => handleOptionSelected("oneOrMultipleImages", "")}
-                >
                   <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <BoxPicturesContainer
@@ -863,54 +714,56 @@ export const CreatePictureView = () => {
                 />
               </>
             )}
-            {optionSelected.size !== "" && optionSelected.oneOrMultipleImages === "one" && (
+            {sizeId !== undefined && (
               <div className="createPicture-box-show-img">
                 <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
                   <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                 </button>
                 <div className="createPicture-span-btn-file">
-                  <span className="createPicture-span">Recommended Aspect Ratio 4K</span>
-                  <label className="w-20">
+                  <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
+                  <label
+                    className={
+                      images?.imageUploaded !== homeFrameFull
+                        ? "createPicture-btn-file max-w-156"
+                        : "createPicture-btn-file-center"
+                    }
+                  >
                     <input className="d-none" type="file" onChange={handleFileUpload} />
-                    <span
-                      className={
-                        optionSelected.images.length ? "createPicture-btn-file" : "createPicture-btn-file-center"
-                      }
-                    >
-                      Browse Image
-                    </span>
+                    <span>Browse Image</span>
                   </label>
                 </div>
                 <div className="createPicture-image-final" ref={containerImgsRef}>
-                  {optionSelected.images[0] && (
+                  {images?.imageDistribution && (
                     <img
-                      className={`createPicture-image-uploaded ${optionSelected.size === "large" ? "wh-81" : ""} ${
-                        optionSelected.size === "medium" ? "wh-71" : ""
-                      } ${optionSelected.size === "small" ? "wh-61" : ""}`}
+                      className={`createPicture-image-uploaded ${sizeId === "large" ? "wh-81" : ""} ${
+                        sizeId === "medium" ? "wh-71" : ""
+                      } ${sizeId === "small" ? "wh-61" : ""}`}
                       alt="select image"
-                      src={optionSelected.images[0]}
+                      src={images?.imageUploaded}
                     />
                   )}
-                  <img className="createPicture-image-frame" alt="frame" src={optionSelected.background} />
+                  <img className="createPicture-image-frame" alt="frame" src={images?.imageDistribution} />
                 </div>
               </div>
             )}
           </>
         )}
-        {optionSelected.distribution === "custom" && (
+        {distributionId === "custom" && (
           <div className="createPicture-box-show-img">
             <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
               <img className="createPicture-svg" src={arrowLeft} alt="previous" />
             </button>
             <div className="createPicture-span-btn-file">
-              <span className="createPicture-span">Recommended Aspect Ratio 4K</span>
-              <label className="w-20">
+              <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
+              <label
+                className={
+                  images?.imageUploaded !== homeFrameFull
+                    ? "createPicture-btn-file max-w-156"
+                    : "createPicture-btn-file-center"
+                }
+              >
                 <input className="d-none" type="file" onChange={handleFileUpload} />
-                <span
-                  className={optionSelected.images.length ? "createPicture-btn-file" : "createPicture-btn-file-center"}
-                >
-                  Browse Image
-                </span>
+                <span>Browse Image</span>
               </label>
             </div>
             <div className="createPicture-image-final" ref={containerImgsRef}>
@@ -936,14 +789,14 @@ export const CreatePictureView = () => {
                           top: (100 / picture.height) * picture.top * -1 + "%",
                           width: (100 / picture.width) * 100 + "%",
                         }}
-                        src={optionSelected.images[0]}
+                        src={images?.imageUploaded}
                       />
                     </div>
                   ))}
               </div>
               <div className="createPicture-container-frames z-index-20 overflow-visible">
                 {picturesPlaced.length > 0 &&
-                  picturesPlaced?.map(({ width, height, left, top }, i) => (
+                  picturesPlaced?.map(({ width, height, left, top, borderRadius }, i) => (
                     <div key={i}>
                       <p
                         className="image-cropped-width"
@@ -975,21 +828,32 @@ export const CreatePictureView = () => {
                       >
                         {Math.round(top * 1.35)}cm
                       </p>
+                      {borderRadius > 0 && (
+                        <p
+                          className="image-cropped-radius"
+                          style={{
+                            left: parseInt(left) + parseInt(width) / 2.5 + "%",
+                            top: parseInt(top) + parseInt(height) / 2.5 + "%",
+                          }}
+                        >
+                          {Math.round(borderRadius)}%
+                        </p>
+                      )}
                     </div>
                   ))}
               </div>
               <img className="createPicture-image-frame-plant" alt="frame" src={customEmptyPlant} />
               <img className="createPicture-image-frame" alt="frame" src={customEmpty} />
             </div>
-            {optionSelected.images.length > 0 && (
+            {images?.imageUploaded !== homeFrameFull && (
               <div className="createPicture-custom-container">
                 <div className="createPicture-custom-buttons">
                   {picturesPlaced.length > 0 && (
-                    <button className="createPicture-btn-file bg-red color-black" onClick={handleRemovePicture}>
+                    <button className="createPicture-btn-remove-custom" onClick={handleRemovePicture}>
                       Remove Last Picture
                     </button>
                   )}
-                  <button className="createPicture-btn-file bg-green color-black" onClick={handleAddPicture}>
+                  <button className="createPicture-btn-add-custom" onClick={handleAddPicture}>
                     Add New Picture
                   </button>
                 </div>
@@ -1109,6 +973,13 @@ export const CreatePictureView = () => {
                 )}
               </div>
             )}
+          </div>
+        )}
+        {(sizeId !== undefined || distributionId === "custom") && images?.imageUploaded !== homeFrameFull && (
+          <div className="w-90">
+            <button className="createPicture-btn-addToCart" onClick={uploadThisSection}>
+              Add to cart
+            </button>
           </div>
         )}
       </div>

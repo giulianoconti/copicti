@@ -5,21 +5,20 @@
   flex-direction: column;
   min-height: 100vh;
   justify-content: center;
-  width: 100%;
 }
 
 .createPicture-container {
   align-items: center;
-  background-color: rgb(50, 50, 50);
-  border-radius: 5px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  background-color: var(--color-5);
+  border-radius: 8px;
+  border: 2px solid var(--color-6);
+  box-shadow: 0 0 10px 0 rgb(50, 50, 50);
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   margin: 72px 8px 8px 8px;
   max-width: 1000px;
-  min-height: 712px;
-  padding: 20px;
+  padding: 40px 20px 20px 20px;
   position: relative;
   width: 80%;
 }
@@ -30,6 +29,8 @@
 
 .createPicture-title {
   color: var(--white-color);
+  text-shadow: -1px 1px 0 var(--color-6), 1px 1px 0 var(--color-6), 1px -1px 0 var(--color-6),
+    -1px -1px 0 var(--color-6);
   font-size: 24px;
   font-weight: 700;
   margin: 8px 0;
@@ -39,8 +40,9 @@
 
 .createPicture-box {
   align-items: center;
-  background-color: var(--color-5);
+  background-color: var(--color-6);
   border-radius: 8px;
+  border: 2px solid var(--color-6);
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -51,13 +53,13 @@
 }
 
 .createPicture-box:hover {
-  background-color: var(--color-4);
+  filter: brightness(1.2);
   scale: 1.1;
 }
 
 .createPicture-image {
   align-items: center;
-  background-color: var(--color-1);
+  background-color: var(--color-2);
   border-radius: 6px 6px 0 0;
   display: flex;
   height: 180px;
@@ -68,7 +70,7 @@
 
 .createPicture-picture {
   align-items: center;
-  background-color: var(--color-6);
+  background: linear-gradient(var(--color-4), var(--color-6));
   border: 1px solid black;
   display: flex;
   flex-direction: column;
@@ -134,7 +136,7 @@
 
 .createPicture-text {
   color: var(--white-color);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 400;
   user-select: none;
 }
@@ -187,8 +189,8 @@
 }
 
 .createPicture-btn-file {
-  background-color: aliceblue;
-  border-radius: 3px;
+  background-color: rgb(220, 220, 220);
+  border-radius: 8px;
   border: 2px solid rgba(0, 0, 0, 0.2);
   color: dodgerblue;
   cursor: pointer;
@@ -196,19 +198,20 @@
   font-weight: bold;
   justify-content: center;
   padding: 8px;
-  transition: filter 0.3s ease;
+  transition: background-color 0.3s ease;
   width: 100%;
 }
 
 .createPicture-btn-file:hover {
-  filter: brightness(85%);
+  background-color: rgb(255, 255, 255);
 }
 
 .createPicture-btn-file-center {
-  background-color: aliceblue;
-  border-radius: 3px;
+  background-color: rgb(220, 220, 220);
+  border-radius: 8px;
   border: thin solid grey;
   color: dodgerblue;
+  cursor: pointer;
   font-weight: bold;
   left: 30%;
   padding: 0.5em;
@@ -221,7 +224,7 @@
 }
 
 .createPicture-btn-file-center:hover {
-  background-color: var(--color-5);
+  background-color: rgb(255, 255, 255);
 }
 
 .createPicture-svg {
@@ -234,7 +237,7 @@
   font-size: 12px;
   font-weight: 700;
   text-align: start;
-  width: 80%;
+  width: 50%;
 }
 
 .createPicture-image-final {
@@ -245,12 +248,11 @@
   height: auto;
   justify-content: center;
   position: relative;
-  transition: all 0.3s ease;
   width: 90%;
 }
 
 .createPicture-image-uploaded {
-  background-color: rgb(199, 184, 153);
+  background-color: var(--color-6);
   position: absolute;
   top: 0;
 }
@@ -278,7 +280,7 @@
 }
 
 .image-cropped-width {
-  background-color: rgba(55, 55, 55,0.8);
+  background-color: rgba(55, 55, 55, 0.8);
   color: rgb(150, 150, 255);
   font-size: 12px;
   padding: 2px;
@@ -288,7 +290,7 @@
 }
 
 .image-cropped-height {
-  background-color: rgba(55, 55, 55,0.8);
+  background-color: rgba(55, 55, 55, 0.8);
   color: rgb(255, 255, 150);
   font-size: 12px;
   padding: 2px;
@@ -300,7 +302,7 @@
 }
 
 .image-cropped-left {
-  background-color: rgba(55, 55, 55,0.8);
+  background-color: rgba(55, 55, 55, 0.8);
   color: rgb(255, 150, 255);
   font-size: 12px;
   padding: 2px;
@@ -310,7 +312,7 @@
 }
 
 .image-cropped-top {
-  background-color: rgba(55, 55, 55,0.8);
+  background-color: rgba(55, 55, 55, 0.8);
   color: rgb(150, 255, 255);
   font-size: 12px;
   padding: 2px;
@@ -318,6 +320,16 @@
   text-orientation: mixed;
   text-shadow: -1px 1px 0 #000, 1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;
   writing-mode: vertical-rl;
+  z-index: 20;
+}
+
+.image-cropped-radius {
+  background-color: rgba(55, 55, 55, 0.8);
+  color: rgb(255, 255, 255);
+  font-size: 12px;
+  padding: 2px;
+  position: absolute;
+  text-shadow: -1px 1px 0 #000, 1px 1px 0 #000, 1px -1px 0 #000, -1px -1px 0 #000;
   z-index: 20;
 }
 
@@ -391,7 +403,7 @@
   appearance: none;
   background-color: var(--color-6);
   border: 2px solid var(--black-color);
-  border-radius: 3px;
+  border-radius: 8px;
   height: 6px;
   width: 100px;
 }
@@ -414,7 +426,7 @@
 
 .createPicture-input-number {
   background-color: var(--color-6);
-  border-radius: 3px;
+  border-radius: 8px;
   border: none;
   color: var(--white-color);
   font-size: 16px;
@@ -447,60 +459,116 @@ input[type="number"] {
   width: 50px;
 }
 
+.createPicture-btn-add-custom {
+  background-color: rgb(50, 200, 50);
+  border-radius: 0 0 8px 0;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  color: var(--black-color);
+  cursor: pointer;
+  display: flex;
+  font-weight: bold;
+  justify-content: center;
+  padding: 8px;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.createPicture-btn-add-custom:hover {
+  background-color: rgb(50, 255, 50);
+}
+
+.createPicture-btn-remove-custom {
+  background-color: rgb(200, 50, 50);
+  border-radius: 0 0 0 8px;
+  border: 2px solid rgba(0, 0, 0, 0.2);
+  color: var(--black-color);
+  cursor: pointer;
+  display: flex;
+  font-weight: bold;
+  justify-content: center;
+  padding: 8px;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.createPicture-btn-remove-custom:hover {
+  background-color: rgb(255, 50, 50);
+}
+
+.createPicture-btn-addToCart {
+  align-items: center;
+  background-color: var(--color-6);
+  border-radius: 8px;
+  color: var(--white-color);
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  font-weight: 100;
+  height: 30px;
+  margin: 8px 0 8px auto;
+  padding: 4px 8px;
+  transition: background-color 0.3s ease;
+}
+
+.createPicture-btn-addToCart:hover {
+  background-color: var(--color-4);
+}
+
 @media (max-width: 768px) {
   .createPicture-container {
-    background-color: transparent;
-    box-shadow: none;
+    border: none;
+    border-bottom: 2px solid var(--color-6);
     border-radius: 0;
+    border-top: 2px solid var(--color-6);
     flex-direction: column;
-    margin: 64px 0 0 0;
+    margin: 72px 0 8px 0;
     min-height: 0;
     padding: 0;
     width: 100%;
   }
 
   .createPicture-title {
-    color: var(--color-6);
+    color: var(--white-color);
+    text-shadow: -1px 1px 0 var(--color-6), 1px 1px 0 var(--color-6), 1px -1px 0 var(--color-6),
+      -1px -1px 0 var(--color-6);
     font-size: 4vw;
+    font-weight: 700;
   }
 
   .createPicture-box {
     border-radius: 0;
+    border: none;
     outline: 8px solid var(--color-6);
-    margin: -44px 0;
-    scale: 0.6;
+    margin: 16px 0;
+    height: 156px;
     width: 100%;
   }
 
   .createPicture-box:hover {
-    scale: 0.6;
+    filter: brightness(1);
+    scale: 1;
   }
 
   .createPicture-image {
     border-radius: 0;
   }
 
-  .createPicture-picture {
-    scale: 1.6;
-    margin: 0 16px;
+  .createPicture-pic-title {
+    font-size: 16px;
+    margin: 4px 0 0 0;
   }
 
   .createPicture-btn-previus {
     border-radius: 0;
     left: 0;
-    margin: 0 0px 8px 0;
+    margin: 8px 0;
     position: relative;
     top: 0;
     width: 30%;
   }
 
   .createPicture-box-show-img {
-    background-color: rgb(50, 50, 50);
-    border-top: 1px solid black;
-    border-bottom: 1px solid black;
     font-size: 12px;
-    padding: 24px 0;
-    text-align: center;
   }
 
   .createPicture-btn-file {
@@ -508,7 +576,7 @@ input[type="number"] {
   }
 
   .createPicture-image-final {
-    height: 50.6vw;
+    height: 50.4vw;
   }
 
   .image-cropped-width {
@@ -550,5 +618,19 @@ input[type="number"] {
 
   .createPicture-custom-text {
     width: 5%;
+  }
+
+  .createPicture-btn-addToCart {
+    border-radius: 0;
+    font-size: 12px;
+    height: 30px;
+    margin: 0 0 8px auto;
+    padding: 4px 8px;
+  }
+}
+
+@media screen and (min-height: 776px) {
+  .createPicture-container {
+    min-height: 712px;
   }
 }

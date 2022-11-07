@@ -46,7 +46,7 @@ export const ProductsView = () => {
   if (isLoadingPage) {
     return (
       <div className="products-screen">
-        <div className="products-container">
+        <div className="products-container align-center">
           <IsLoading />
         </div>
       </div>
