@@ -1,7 +1,4 @@
-import { async } from "@firebase/util";
-import React from "react";
-import { useState } from "react";
-import { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { IsLoading } from "../../components/isLoading/IsLoading";
 import { useAuth } from "../../context/authContext";
 import { deleteThisUserOrder, getUserOrders } from "../../firebase/firebase";
