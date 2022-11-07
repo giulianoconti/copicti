@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { auth } from "../firebase/firebase";
-import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
 import homeFrameFull from "../assets/homeFrameFull.webp";
 import PropTypes from "prop-types";
 
@@ -22,10 +22,20 @@ export const AuthProvider = ({ children }) => {
 
   const loginWithGoogle = async () => {
     const googleProvider = new GoogleAuthProvider();
-    try {
-      await signInWithPopup(auth, googleProvider);
-    } catch (error) {
-      console.error(error);
+    /* signIn with a computer */
+    if (window.innerWidth > 768) {
+      try {
+        await signInWithPopup(auth, googleProvider);
+      } catch (error) {
+        console.error(error);
+      }
+    } else {
+      /* signIn with a mobile */
+      try {
+        await signInWithRedirect(auth, googleProvider);
+      } catch (error) {
+        console.error(error);
+      }
     }
   };
 

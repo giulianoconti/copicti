@@ -9,6 +9,10 @@
   text-decoration: none;
 }
 
+html {
+  background-color: rgb(214, 201, 169);
+}
+
 :root {
   --color-1: rgb(230, 226, 224);
   --color-2: rgb(209, 200, 184);
