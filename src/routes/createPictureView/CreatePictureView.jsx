@@ -223,12 +223,9 @@ export const CreatePictureView = () => {
     if (userInfo?.email) {
       /* create custom id */
       const id = `${userInfo?.email.split("@")[0]}-${Date.now()}`;
-      let scale = 1;
-      if (containerImgsRef.current.lastChild.width < 864) {
-        scale = 864 / containerImgsRef.current.lastChild.width;
-      }
       html2canvas(containerImgsRef.current, {
-        scale,
+        height: containerImgsRef.current.offsetHeight,
+        width: containerImgsRef.current.offsetWidth,
         willReadFrequently: true,
       }).then(async (canvas) => {
         const link = document.createElement("a");
@@ -357,7 +354,7 @@ export const CreatePictureView = () => {
   return (
     <div className="createPicture-screen">
       <div className="createPicture-container">
-        {/*  <button onClick={uploadInProductsImages}>test</button> */}
+      {/*   <button onClick={() => console.log(containerImgsRef.current.offsetHeight)}>test</button> */}
         {distributionId === undefined && (
           <>
             <h1 className="createPicture-title">Choose the distribution of images you want</h1>

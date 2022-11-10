@@ -25,9 +25,9 @@ export const MyCart = () => {
     }
   };
 
-  const deleteItem = async (email, name, id, price) => {
+  const deleteItem = async (email, id, price) => {
     setIsLoadingPage(true);
-    await deleteThisUserOrder(email, name, id, price);
+    await deleteThisUserOrder(email, id, price);
     handleGetUserOrders();
   };
 
@@ -56,7 +56,7 @@ export const MyCart = () => {
                 <h2 className="cart-item-text">Price: ${item?.price || "agree with the seller"}</h2>
                 <button
                   className="cart-item-btn"
-                  onClick={() => deleteItem(userInfo.email, item.name, item.id, item?.price)}
+                  onClick={() => deleteItem(userInfo.email, item.id, item?.price)}
                 >
                   Remove
                 </button>

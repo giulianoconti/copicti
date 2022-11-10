@@ -196,6 +196,7 @@
   font-weight: 700;
   height: 24px;
   justify-content: center;
+  margin-left: auto;
   transition: background-color 0.3s ease;
   width: 100%;
 }
@@ -233,7 +234,7 @@
 .createPicture-image-final {
   align-items: center;
   aspect-ratio: 16/9;
-  background-color: var(--color-1);
+  background-color: rgb(214, 201, 169);
   display: flex;
   height: auto;
   justify-content: center;

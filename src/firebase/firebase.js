@@ -123,11 +123,11 @@ export const getUserOrders = async (email) => {
   }
 };
 
-export const deleteThisUserOrder = async (email, orderName, id, price = "") => {
+export const deleteThisUserOrder = async (email, id, price = "") => {
   console.log("deleteThisUserOrder");
   const user = await getDoc(doc(db, "users", email));
   if (user.exists()) {
-    const newOrders = user.data().orders.filter((userOrder) => userOrder.name !== orderName);
+    const newOrders = user.data().orders.filter((userOrder) => userOrder.id !== id);
     await setDoc(doc(db, "users", email), {
       orders: newOrders,
     });
