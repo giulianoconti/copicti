@@ -17,7 +17,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  margin: 72px 8px 8px 8px;
+  margin: 72px 0 8px 0;
   max-width: 1000px;
   padding: 20px;
   position: relative;
@@ -34,7 +34,7 @@
     -1px -1px 0 var(--color-6);
   font-size: 24px;
   font-weight: 700;
-  margin: 8px 0;
+  margin: 0 0 4px 0;
   text-align: center;
   width: 100%;
 }
@@ -48,7 +48,7 @@
   display: flex;
   flex-direction: column;
   height: 256px;
-  margin: 16px 8px;
+  margin: 8px;
   transition: all 0.3s ease;
   width: 256px;
 }
@@ -527,6 +527,7 @@ input[type="number"] {
       -1px -1px 0 var(--color-6);
     font-size: 4vw;
     font-weight: 700;
+    margin: 4px 0;
   }
 
   .createPicture-box {
@@ -621,7 +622,7 @@ input[type="number"] {
   }
 }
 
-@media screen and (min-height: 720px) and (min-width: 1200px) {
+@media screen and (min-height: 720px) and (min-width: 768px) {
   .createPicture-container {
     min-height: 645px;
   }

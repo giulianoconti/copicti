@@ -13,6 +13,7 @@ import { AdminProducts } from "./routes/admin/AdminProducts";
 import { AccessIfLogged } from "./components/protectedRoutes/AccessIfLogged";
 import "./index.css";
 import { AccessIfYouAreAdmin } from "./components/protectedRoutes/AccessIfYouAreAdmin";
+import { AdminUsers } from "./routes/admin/AdminUsers";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
@@ -41,6 +42,46 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             <AccessIfLogged>
               <AccessIfYouAreAdmin>
                 <AdminProducts />
+              </AccessIfYouAreAdmin>
+            </AccessIfLogged>
+          }
+        />
+         <Route
+          path="/admin/products/:distributionId"
+          element={
+            <AccessIfLogged>
+              <AccessIfYouAreAdmin>
+                <AdminProducts />
+              </AccessIfYouAreAdmin>
+            </AccessIfLogged>
+          }
+        />
+         <Route
+          path="/admin/products/:distributionId/:sizeId"
+          element={
+            <AccessIfLogged>
+              <AccessIfYouAreAdmin>
+                <AdminProducts />
+              </AccessIfYouAreAdmin>
+            </AccessIfLogged>
+          }
+        />
+         <Route
+          path="/admin/users"
+          element={
+            <AccessIfLogged>
+              <AccessIfYouAreAdmin>
+                <AdminUsers />
+              </AccessIfYouAreAdmin>
+            </AccessIfLogged>
+          }
+        />
+        <Route
+          path="/admin/users/:userEmail"
+          element={
+            <AccessIfLogged>
+              <AccessIfYouAreAdmin>
+                <AdminUsers />
               </AccessIfYouAreAdmin>
             </AccessIfLogged>
           }

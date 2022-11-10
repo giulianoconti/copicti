@@ -54,10 +54,7 @@ export const MyCart = () => {
                   {item?.distributionSelected ? `Distribution: ${item?.distributionSelected}` : ""}
                 </h2>
                 <h2 className="cart-item-text">Price: ${item?.price || "agree with the seller"}</h2>
-                <button
-                  className="cart-item-btn"
-                  onClick={() => deleteItem(userInfo.email, item.id, item?.price)}
-                >
+                <button className="cart-item-btn" onClick={() => deleteItem(userInfo.email, item.id, item?.price)}>
                   Remove
                 </button>
               </div>

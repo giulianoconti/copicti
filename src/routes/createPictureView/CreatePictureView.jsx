@@ -22,11 +22,12 @@ import customEmpty from "../../assets/copictiEmpty.webp";
 import customEmptyPlant from "../../assets/copictiEmptyPlant.webp";
 import homeFrameFull from "../../assets/homeFrameFull.webp";
 import html2canvas from "html2canvas";
-import { postImageInStorage, postInStorageProductsImages, postUserOrder } from "../../firebase/firebase";
+import { postImageInStorage, postInStorageProductsImages, postProduct, postUserOrder } from "../../firebase/firebase";
 import { useAuth } from "../../context/authContext";
 import { useNavigate, useParams } from "react-router-dom";
 import "./CreatePictureView.css";
 import "../../stylesGlobal.css";
+import PropTypes from "prop-types";
 
 const allCopictiImages = {
   polyptychL,
@@ -47,7 +48,13 @@ const allCopictiImages = {
   custom: customEmpty,
 };
 
-export const CreatePictureView = () => {
+export const CreatePictureView = ({
+  adminOpen = false,
+  adminNewProduct = {},
+  setAdminNewProduct,
+  adminReload = false,
+  setAdminReload,
+}) => {
   const containerImgsRef = useRef();
   const navigate = useNavigate();
   const { distributionId, sizeId } = useParams();
@@ -182,10 +189,18 @@ export const CreatePictureView = () => {
   };
 
   const handleOptionSelected = (key, value) => {
-    if (key === "distribution") {
-      navigate("/create-picture/" + value);
-    } else if (key === "size") {
-      navigate("/create-picture/" + distributionId + "/" + value);
+    if (adminOpen) {
+      if (key === "distribution") {
+        navigate("/admin/products/" + value);
+      } else if (key === "size") {
+        navigate("/admin/products/" + distributionId + "/" + value);
+      }
+    } else {
+      if (key === "distribution") {
+        navigate("/create-picture/" + value);
+      } else if (key === "size") {
+        navigate("/create-picture/" + distributionId + "/" + value);
+      }
     }
   };
 
@@ -263,48 +278,48 @@ export const CreatePictureView = () => {
     }
   };
 
-  const uploadInProductsImages = async () => {
+  const adminUploadInProductsImages = async () => {
     const id = `${userInfo?.email.split("@")[0]}-${Date.now()}`;
-    let name = "";
+    let idProduct = "";
     if (distributionId === "polyptych") {
       if (sizeId === "small") {
-        name = "AA Polyptych Small";
+        idProduct = "AA Polyptych Small";
       } else if (sizeId === "medium") {
-        name = "AA Polyptych Medium";
+        idProduct = "AA Polyptych Medium";
       } else if (sizeId === "large") {
-        name = "AA Polyptych Large";
+        idProduct = "AA Polyptych Large";
       }
     } else if (distributionId === "polyptychSameHeight") {
       if (sizeId === "small") {
-        name = "AB Polyptych SH Small";
+        idProduct = "AB Polyptych SH Small";
       } else if (sizeId === "medium") {
-        name = "AB Polyptych SH Medium";
+        idProduct = "AB Polyptych SH Medium";
       } else if (sizeId === "large") {
-        name = "AB Polyptych SH Large";
+        idProduct = "AB Polyptych SH Large";
       }
     } else if (distributionId === "triptych") {
       if (sizeId === "small") {
-        name = "AC Triptych Small";
+        idProduct = "AC Triptych Small";
       } else if (sizeId === "medium") {
-        name = "AC Triptych Medium";
+        idProduct = "AC Triptych Medium";
       } else if (sizeId === "large") {
-        name = "AC Triptych Large";
+        idProduct = "AC Triptych Large";
       }
     } else if (distributionId === "triptychSquare") {
       if (sizeId === "small") {
-        name = "AD Triptych Square Small";
+        idProduct = "AD Triptych Square Small";
       } else if (sizeId === "medium") {
-        name = "AD Triptych Square Medium";
+        idProduct = "AD Triptych Square Medium";
       } else if (sizeId === "large") {
-        name = "AD Triptych Square Large";
+        idProduct = "AD Triptych Square Large";
       }
     } else if (distributionId === "triptychCircular") {
       if (sizeId === "small") {
-        name = "AE Triptych Circle Small";
+        idProduct = "AE Triptych Circle Small";
       } else if (sizeId === "medium") {
-        name = "AE Triptych Circle Medium";
+        idProduct = "AE Triptych Circle Medium";
       } else if (sizeId === "large") {
-        name = "AE Triptych Circle Large";
+        idProduct = "AE Triptych Circle Large";
       }
     }
     html2canvas(containerImgsRef.current, {
@@ -315,12 +330,47 @@ export const CreatePictureView = () => {
       link.href = canvas.toDataURL("image/webp");
       try {
         const pictureDistributionTransform = transformBase64ToFile(link.href, id + "_distribution");
-        await postInStorageProductsImages(pictureDistributionTransform, name + " 2.webp");
+        await setAdminNewProduct({
+          ...adminNewProduct,
+          id: idProduct,
+          image: await postInStorageProductsImages(pictureDistributionTransform, idProduct),
+        });
+
         console.log("Your order has been added to the cart");
       } catch (error) {
         console.log(error);
       }
     });
+  };
+
+  useEffect(() => {
+    if (adminNewProduct.length > 0) {
+      setTimeout(() => {
+        handleAdminAddProduct();
+      }, 1000);
+    }
+  }, [adminNewProduct?.image]);
+
+  const handleAdminAddProduct = async () => {
+    if (
+      adminNewProduct.id !== "" &&
+      adminNewProduct.name !== "" &&
+      adminNewProduct.description !== "" &&
+      adminNewProduct.price !== "" &&
+      adminNewProduct.image !== ""
+    ) {
+      await postProduct(adminNewProduct);
+      setAdminReload(!adminReload);
+      setAdminNewProduct({
+        id: "",
+        name: "",
+        description: "",
+        price: "",
+        image: "",
+      });
+    } else {
+      alert("Please fill all the fields");
+    }
   };
 
   const transformBase64ToFile = (base64, fileName) => {
@@ -354,7 +404,6 @@ export const CreatePictureView = () => {
   return (
     <div className="createPicture-screen">
       <div className="createPicture-container">
-      {/*   <button onClick={() => console.log(containerImgsRef.current.offsetHeight)}>test</button> */}
         {distributionId === undefined && (
           <>
             <h1 className="createPicture-title">Choose the distribution of images you want</h1>
@@ -913,14 +962,34 @@ export const CreatePictureView = () => {
           </div>
         )}
 
-        {(distributionId === "custom" || sizeId !== undefined) && images?.imageUploaded !== homeFrameFull && (
-          <div className="w-90">
-            <button className="createPicture-btn-addToCart" onClick={uploadThisSection}>
-              Add to cart
-            </button>
-          </div>
+        {(distributionId === "custom" || sizeId !== undefined) &&
+          !adminOpen &&
+          images?.imageUploaded !== homeFrameFull && (
+            <div className="w-90">
+              <button className="createPicture-btn-addToCart" onClick={uploadThisSection}>
+                Add to cart
+              </button>
+            </div>
+          )}
+        {adminOpen && (
+          <button className="adminProducts-btn-addToProducts-disabled" disabled>
+            | ADMIN | --- | LOAD IMAGE TO ENABLE THE BUTTON | --- | ADMIN |
+          </button>
+        )}
+        {adminOpen && images?.imageUploaded !== homeFrameFull && (
+          <button className="adminProducts-btn-addToProducts" onClick={adminUploadInProductsImages}>
+            | ADMIN | --- | Add to products | --- | ADMIN |
+          </button>
         )}
       </div>
     </div>
   );
+};
+
+CreatePictureView.propTypes = {
+  adminOpen: PropTypes.bool,
+  setAdminReload: PropTypes.func,
+  adminReload: PropTypes.bool,
+  adminNewProduct: PropTypes.object,
+  setAdminNewProduct: PropTypes.func,
 };
