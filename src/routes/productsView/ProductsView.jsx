@@ -1,16 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-/* import arrowLeft from "../../pictures/arrow-left.svg";
-import arrowRight from "../../pictures/arrow-right.svg"; */
-import { getProducts, postProducts } from "../../firebase/firebase";
+import { getProducts, postUserOrder } from "../../firebase/firebase";
 import { IsLoading } from "../../components/isLoading/IsLoading";
+import { useAuth } from "../../context/authContext";
+import arrowLeft from "../../assets/arrow-left.svg";
+import arrowRight from "../../assets/arrow-right.svg";
 import "./ProductsView.css";
 
 export const ProductsView = () => {
+  const { products_id } = useParams();
+  const { loginWithGoogle, userInfo } = useAuth();
   const [products, setProducts] = useState([]);
+  const [page, setPage] = useState(1);
   const [isLoadingPage, setIsLoadingPage] = useState(true);
   const [isLoadingItems, setIsLoadingItems] = useState(true);
-  const { products_id } = useParams();
+  const [openProduct, setOpenProduct] = useState({
+    id: "",
+    name: "",
+    description: "",
+    price: "",
+    image: "",
+  });
 
   useEffect(() => {
     getProductsFromFirebase();
@@ -28,20 +38,21 @@ export const ProductsView = () => {
     setIsLoadingItems(false);
   };
 
-  /* const cargarProduct = () => {
-    postProducts({
-      description: "lorem ipsum dolor sit amet ipsum dolor sit amet ipsum dolor sit amet",
-      image: "https://http2.mlstatic.com/D_NQ_NP_2X_766168-MLA48415601476_122021-F.webp",
-      images: [
-        "https://http2.mlstatic.com/D_NQ_NP_2X_766168-MLA48415601476_122021-F.webp",
-        "https://http2.mlstatic.com/D_NQ_NP_939414-MLA48383693854_112021-O.webp",
-        "https://http2.mlstatic.com/D_NQ_NP_2X_766168-MLA48415601476_122021-F.webp",
-      ],
-      name: "Product 22 x2x2x1",
-      price: 220,
-      type: "x2_small-x2_medium-x1_large",
-    });
-  }; */
+  const addToCart = async () => {
+    if (userInfo) {
+      await postUserOrder({ email: userInfo.email, order: openProduct });
+      setOpenProduct({
+        id: "",
+        name: "",
+        description: "",
+        price: "",
+        image: "",
+      });
+      alert("Product added to cart");
+    } else {
+      loginWithGoogle();
+    }
+  };
 
   if (isLoadingPage) {
     return (
@@ -96,10 +107,8 @@ export const ProductsView = () => {
             </div>
           </Link>
           <Link
-            className={`products-filter-frame ${
-              products_id === "x2_small-x2_medium-x1_large" ? "products-filter-active" : ""
-            }`}
-            to="/products/x2_small-x2_medium-x1_large"
+            className={`products-filter-frame ${products_id === "AA" ? "products-filter-active" : ""}`}
+            to="/products/AA"
           >
             <h3 className="products-filter-title">Polyptych</h3>
             <div className="products-filter-pic-s" />
@@ -109,8 +118,8 @@ export const ProductsView = () => {
             <div className="products-filter-pic-s" />
           </Link>
           <Link
-            className={`products-filter-frame ${products_id === "x2_medium-x2-large" ? "products-filter-active" : ""}`}
-            to="/products/x2_medium-x2-large"
+            className={`products-filter-frame ${products_id === "AB" ? "products-filter-active" : ""}`}
+            to="/products/AB"
           >
             <h3 className="products-filter-title">
               Polyptych <span className="products-filter-span">SH</span>
@@ -121,8 +130,8 @@ export const ProductsView = () => {
             <div className="products-filter-pic-l" />
           </Link>
           <Link
-            className={`products-filter-frame ${products_id === "x3_same" ? "products-filter-active" : ""}`}
-            to="/products/x3_same"
+            className={`products-filter-frame ${products_id === "AC" ? "products-filter-active" : ""}`}
+            to="/products/AC"
           >
             <h3 className="products-filter-title">Triptych</h3>
             <div className="products-filter-pic-l" />
@@ -130,8 +139,8 @@ export const ProductsView = () => {
             <div className="products-filter-pic-l" />
           </Link>
           <Link
-            className={`products-filter-frame ${products_id === "x3_square_same" ? "products-filter-active" : ""}`}
-            to="/products/x3_square_same"
+            className={`products-filter-frame ${products_id === "AD" ? "products-filter-active" : ""}`}
+            to="/products/AD"
           >
             <h3 className="products-filter-title">
               Triptych <span className="products-filter-span">Square</span>
@@ -141,8 +150,8 @@ export const ProductsView = () => {
             <div className="products-filter-pic-square-l" />
           </Link>
           <Link
-            className={`products-filter-frame ${products_id === "x3_circle_same" ? "products-filter-active" : ""}`}
-            to="/products/x3_circle_same"
+            className={`products-filter-frame ${products_id === "AE" ? "products-filter-active" : ""}`}
+            to="/products/AE"
           >
             <h3 className="products-filter-title">
               Triptych <span className="products-filter-span">Circle</span>
@@ -157,9 +166,10 @@ export const ProductsView = () => {
             <IsLoading />
           ) : (
             products.map((product, i) => {
-              if (i > 19) return;
+              if (i > page * 20 - 1 && i < page * 20 + 19) return;
+              1;
               return (
-                <div className="products-item" key={product.id}>
+                <div className="products-item" onClick={() => setOpenProduct(product)} key={product.id}>
                   <img className="products-item-img" src={product.image} alt={"product " + product.id} />
                   <h3 className="products-item-name">{product.name}</h3>
                   <h5 className="products-item-price">${product.price}</h5>
@@ -167,55 +177,70 @@ export const ProductsView = () => {
               );
             })
           )}
-        </div>
-        {/*  <div className="products-items">
-          {filteredProduct.map((product) => (
-            <div className="products-item" key={product.id}>
-              <img className="products-item-img" src={product.image} alt={"product " + product.id} />
-              <h3 className="products-item-title">
-                {product.title} {product.id}
-              </h3>
-            </div>
-          ))}
-
-          {filterProduct === "all" && (
-            <div className="products-page-container">
-              {page > 1 && (
-                <>
-                  <button className="products-page-btn products-page-btn-arrows" onClick={() => setPage(page - 1)}>
-                    <img className="products-page-btn-img" src={arrowLeft} alt="left arrow" />
-                  </button>
-                  {page > 2 && (
-                    <button className="products-page-btn" onClick={() => setPage(page - 2)}>
-                      {page - 2}
-                    </button>
-                  )}
-                  <button className="products-page-btn" onClick={() => setPage(page - 1)}>
-                    {page - 1}
-                  </button>
-                </>
-              )}
-              <button className="products-page-btn products-page-btn-active" onClick={() => setPage(page)}>
-                {page}
-              </button>
-              {page * 20 < allProducts.length && (
-                <>
-                  <button className="products-page-btn" onClick={() => setPage(page + 1)}>
-                    {page + 1}
-                  </button>
-                  {page * 20 + 20 < allProducts.length && (
-                    <button className="products-page-btn" onClick={() => setPage(page + 2)}>
-                      {page + 2}
-                    </button>
-                  )}
-                  <button className="products-page-btn products-page-btn-arrows" onClick={() => setPage(page + 1)}>
-                    <img className="products-page-btn-img" src={arrowRight} alt="right arrow" />
-                  </button>
-                </>
-              )}
+          {openProduct.id !== "" && (
+            <div
+              className="products-openProduct-container"
+              onClick={({ target: { className } }) =>
+                (className === "products-openProduct-container" || className === "products-openProduct-close") &&
+                setOpenProduct({ id: "", name: "", description: "", price: "", image: "" })
+              }
+            >
+              <div className="products-openProduct-items">
+                <button className="products-openProduct-close">x</button>
+                <img className="products-openProduct-img" src={openProduct.image} alt={"product " + openProduct.id} />
+                <h3 className="products-openProduct-name">{openProduct.name}</h3>
+                <h5 className="products-openProduct-price">${openProduct.price}</h5>
+                {openProduct.description.split(".").map((line, i) => (
+                  <p className="products-openProduct-description" key={i}>
+                    {line}
+                  </p>
+                ))}
+                <button className="products-openProduct-btn" onClick={addToCart}>
+                  Add to cart
+                </button>
+              </div>
             </div>
           )}
-        </div> */}
+
+          <div className="products-page-container">
+            {page > 1 && (
+              <button
+                className={`products-page-btn products-page-btn-arrows products-page-btn_-${page > 2 ? "3" : "2_5"}`}
+                onClick={() => setPage(page - 1)}
+              >
+                <img className="products-page-btn-img" src={arrowLeft} alt="left arrow" />
+              </button>
+            )}
+            {page > 2 && (
+              <button className="products-page-btn products-page-btn_-2" onClick={() => setPage(page - 2)}>
+                {page - 2}
+              </button>
+            )}
+            {page > 1 && (
+              <button className="products-page-btn products-page-btn_-1" onClick={() => setPage(page - 1)}>
+                {page - 1}
+              </button>
+            )}
+            <button className="products-page-btn products-page-btn-active" onClick={() => setPage(page)}>
+              {page}
+            </button>
+
+            <button className="products-page-btn products-page-btn_1" onClick={() => setPage(page + 1)}>
+              {page + 1}
+            </button>
+
+            <button className="products-page-btn products-page-btn_2" onClick={() => setPage(page + 2)}>
+              {page + 2}
+            </button>
+
+            <button
+              className="products-page-btn products-page-btn-arrows products-page-btn_3"
+              onClick={() => setPage(page + 1)}
+            >
+              <img className="products-page-btn-img" src={arrowRight} alt="right arrow" />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

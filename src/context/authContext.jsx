@@ -16,8 +16,11 @@ export const AuthProvider = ({ children }) => {
   const [userInfo, setUserInfo] = useState(null);
   const [loadingUser, setLoadingUser] = useState(true);
   const [images, setImages] = useState({
-    imageUploaded: homeFrameFull,
     imageDistribution: "",
+    imageUploaded: homeFrameFull,
+    name: "",
+    height: "",
+    width: "",
   });
 
   const loginWithGoogle = async () => {

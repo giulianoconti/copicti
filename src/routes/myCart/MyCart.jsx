@@ -25,9 +25,9 @@ export const MyCart = () => {
     }
   };
 
-  const deleteItem = async (email, name, id) => {
+  const deleteItem = async (email, name, id, price) => {
     setIsLoadingPage(true);
-    await deleteThisUserOrder(email, name, id);
+    await deleteThisUserOrder(email, name, id, price);
     handleGetUserOrders();
   };
 
@@ -47,11 +47,17 @@ export const MyCart = () => {
         <div className="cart-items-container">
           {order?.map((item) => (
             <div className="cart-item" key={item.id}>
-              <img className="cart-item-img" src={item.pictureDistribution} alt="item" />
+              <img className="cart-item-img" src={item?.pictureDistribution || item?.image} alt="item" />
               <div className="cart-item-info">
                 <h2 className="cart-item-name">{item.name}</h2>
-                <h2 className="cart-item-text">Distribution: {item?.distributionSelected}</h2>
-                <button className="cart-item-btn" onClick={() => deleteItem(userInfo.email, item.name, item.id)}>
+                <h2 className="cart-item-text">
+                  {item?.distributionSelected ? `Distribution: ${item?.distributionSelected}` : ""}
+                </h2>
+                <h2 className="cart-item-text">Price: ${item?.price || "agree with the seller"}</h2>
+                <button
+                  className="cart-item-btn"
+                  onClick={() => deleteItem(userInfo.email, item.name, item.id, item?.price)}
+                >
                   Remove
                 </button>
               </div>

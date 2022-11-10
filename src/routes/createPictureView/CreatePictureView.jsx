@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { BoxPicturesContainer } from "../../components/boxPicturesContainer/BoxPicturesContainer";
+import { BoxShowImgContainer } from "../../components/boxPicturesContainer/BoxShowImgContainer";
 import { IsLoading } from "../../components/isLoading/IsLoading";
 import arrowLeft from "../../assets/arrow-left.svg";
 import polyptychL from "../../assets/copictiPolyptychL.webp";
@@ -21,7 +22,7 @@ import customEmpty from "../../assets/copictiEmpty.webp";
 import customEmptyPlant from "../../assets/copictiEmptyPlant.webp";
 import homeFrameFull from "../../assets/homeFrameFull.webp";
 import html2canvas from "html2canvas";
-import { postImageInStorage, postUserOrder } from "../../firebase/firebase";
+import { postImageInStorage, postInStorageProductsImages, postUserOrder } from "../../firebase/firebase";
 import { useAuth } from "../../context/authContext";
 import { useNavigate, useParams } from "react-router-dom";
 import "./CreatePictureView.css";
@@ -59,9 +60,24 @@ export const CreatePictureView = () => {
   useEffect(() => {
     /* when changing the background, the loading screen starts until it finishes loading */
     if (sizeId !== undefined || distributionId === "custom") {
+      let heightImage = 81;
+      let widthImage = 81;
+      let topImage = 0;
+      if (sizeId === "medium") {
+        heightImage = 71;
+        widthImage = 71;
+        topImage = 5;
+      } else if (sizeId === "small") {
+        heightImage = 61;
+        widthImage = 61;
+        topImage = 10;
+      }
       setIsLoading(true);
       setImages({
         ...images,
+        height: heightImage,
+        width: widthImage,
+        top: topImage,
         imageDistribution: allCopictiImages[distributionId + (sizeId !== undefined ? sizeId[0]?.toUpperCase() : "")],
       });
       const imgDistribution = new Image();
@@ -192,10 +208,10 @@ export const CreatePictureView = () => {
           setImages({
             ...images,
             imageUploaded: dataURL,
+            name: files[0].name.split(".")[0],
           });
         };
       };
-      containerImgsRef.current.name = files[0].name.split(".")[0];
       setIsLoading(false);
     } else {
       alert("Please upload an image file");
@@ -227,10 +243,12 @@ export const CreatePictureView = () => {
             email: userInfo.email,
             order: {
               id: id,
-              name: containerImgsRef.current.name,
+              name: images.name,
               uploadedImage: uploadedImageLink,
               pictureDistribution: pictureDistributionLink,
               distributionSelected: distributionSelected,
+              heightReference: images.height,
+              widthReference: images.width,
             },
           })
             .then(() => {
@@ -248,6 +266,66 @@ export const CreatePictureView = () => {
     }
   };
 
+  const uploadInProductsImages = async () => {
+    const id = `${userInfo?.email.split("@")[0]}-${Date.now()}`;
+    let name = "";
+    if (distributionId === "polyptych") {
+      if (sizeId === "small") {
+        name = "AA Polyptych Small";
+      } else if (sizeId === "medium") {
+        name = "AA Polyptych Medium";
+      } else if (sizeId === "large") {
+        name = "AA Polyptych Large";
+      }
+    } else if (distributionId === "polyptychSameHeight") {
+      if (sizeId === "small") {
+        name = "AB Polyptych SH Small";
+      } else if (sizeId === "medium") {
+        name = "AB Polyptych SH Medium";
+      } else if (sizeId === "large") {
+        name = "AB Polyptych SH Large";
+      }
+    } else if (distributionId === "triptych") {
+      if (sizeId === "small") {
+        name = "AC Triptych Small";
+      } else if (sizeId === "medium") {
+        name = "AC Triptych Medium";
+      } else if (sizeId === "large") {
+        name = "AC Triptych Large";
+      }
+    } else if (distributionId === "triptychSquare") {
+      if (sizeId === "small") {
+        name = "AD Triptych Square Small";
+      } else if (sizeId === "medium") {
+        name = "AD Triptych Square Medium";
+      } else if (sizeId === "large") {
+        name = "AD Triptych Square Large";
+      }
+    } else if (distributionId === "triptychCircular") {
+      if (sizeId === "small") {
+        name = "AE Triptych Circle Small";
+      } else if (sizeId === "medium") {
+        name = "AE Triptych Circle Medium";
+      } else if (sizeId === "large") {
+        name = "AE Triptych Circle Large";
+      }
+    }
+    html2canvas(containerImgsRef.current, {
+      scale: 1,
+      willReadFrequently: true,
+    }).then(async (canvas) => {
+      const link = document.createElement("a");
+      link.href = canvas.toDataURL("image/webp");
+      try {
+        const pictureDistributionTransform = transformBase64ToFile(link.href, id + "_distribution");
+        await postInStorageProductsImages(pictureDistributionTransform, name + " 2.webp");
+        console.log("Your order has been added to the cart");
+      } catch (error) {
+        console.log(error);
+      }
+    });
+  };
+
   const transformBase64ToFile = (base64, fileName) => {
     const arr = base64.split(",");
     const mime = arr[0].match(/:(.*?);/)[1];
@@ -258,6 +336,13 @@ export const CreatePictureView = () => {
       u8arr[n] = bstr.charCodeAt(n);
     }
     return new File([u8arr], fileName, { type: mime });
+  };
+
+  const handleChangeDistributionSize = ({ target: { name, value } }) => {
+    setImages({
+      ...images,
+      [name]: value,
+    });
   };
 
   if (isLoading)
@@ -272,7 +357,7 @@ export const CreatePictureView = () => {
   return (
     <div className="createPicture-screen">
       <div className="createPicture-container">
-        {/* <button onClick={() => console.log(optionSelected.imageFile)}>test</button> */}
+        {/*  <button onClick={uploadInProductsImages}>test</button> */}
         {distributionId === undefined && (
           <>
             <h1 className="createPicture-title">Choose the distribution of images you want</h1>
@@ -331,651 +416,507 @@ export const CreatePictureView = () => {
             />
           </>
         )}
-        {distributionId === "polyptych" && (
+        {sizeId === undefined && (
           <>
-            {sizeId === undefined && (
-              <>
-                <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
-                </button>
-                <BoxPicturesContainer
-                  boxes={[
-                    {
-                      title: "Polyptych Large",
-                      pictures: {
-                        texts: [
-                          ["30", "x", "60"],
-                          ["40", "x", "80"],
-                          ["50", "x", "100"],
-                          ["40", "x", "80"],
-                          ["30", "x", "60"],
-                        ],
-                        sizes: ["s", "m", "l", "m", "s"],
-                      },
-                      optionSelected: ["size", "large"],
+            {distributionId === "polyptych" && (
+              <BoxPicturesContainer
+                boxes={[
+                  {
+                    title: "Polyptych Large",
+                    pictures: {
+                      texts: [
+                        ["30", "x", "60"],
+                        ["40", "x", "80"],
+                        ["50", "x", "100"],
+                        ["40", "x", "80"],
+                        ["30", "x", "60"],
+                      ],
+                      sizes: ["s", "m", "l", "m", "s"],
                     },
-                    {
-                      title: "Polyptych Medium",
-                      pictures: {
-                        texts: [
-                          ["20", "x", "40"],
-                          ["30", "x", "60"],
-                          ["40", "x", "80"],
-                          ["30", "x", "60"],
-                          ["20", "x", "40"],
-                        ],
-                        sizes: ["s", "m", "l", "m", "s"],
-                      },
-                      optionSelected: ["size", "medium"],
+                    optionSelected: ["size", "large"],
+                  },
+                  {
+                    title: "Polyptych Medium",
+                    pictures: {
+                      texts: [
+                        ["20", "x", "40"],
+                        ["30", "x", "60"],
+                        ["40", "x", "80"],
+                        ["30", "x", "60"],
+                        ["20", "x", "40"],
+                      ],
+                      sizes: ["s", "m", "l", "m", "s"],
                     },
-                    {
-                      title: "Polyptych Small",
-                      pictures: {
-                        texts: [
-                          ["10", "x", "20"],
-                          ["20", "x", "40"],
-                          ["30", "x", "60"],
-                          ["20", "x", "40"],
-                          ["10", "x", "20"],
-                        ],
-                        sizes: ["s", "m", "l", "m", "s"],
-                      },
-                      optionSelected: ["size", "small"],
+                    optionSelected: ["size", "medium"],
+                  },
+                  {
+                    title: "Polyptych Small",
+                    pictures: {
+                      texts: [
+                        ["10", "x", "20"],
+                        ["20", "x", "40"],
+                        ["30", "x", "60"],
+                        ["20", "x", "40"],
+                        ["10", "x", "20"],
+                      ],
+                      sizes: ["s", "m", "l", "m", "s"],
                     },
-                  ]}
-                  handleOptionSelected={handleOptionSelected}
-                />
-              </>
+                    optionSelected: ["size", "small"],
+                  },
+                ]}
+                handleOptionSelected={handleOptionSelected}
+              />
             )}
-            {sizeId !== undefined && (
+            {distributionId === "polyptychSameHeight" && (
+              <BoxPicturesContainer
+                boxes={[
+                  {
+                    title: "Polyptych Large",
+                    pictures: {
+                      texts: [
+                        ["37.5", "x", "100"],
+                        ["50", "x", "100"],
+                        ["37.5", "x", "100"],
+                        ["50", "x", "100"],
+                      ],
+                      sizes: ["ml", "l", "ml", "l"],
+                    },
+                    optionSelected: ["size", "large"],
+                  },
+                  {
+                    title: "Polyptych Medium",
+                    pictures: {
+                      texts: [
+                        ["30", "x", "80"],
+                        ["40", "x", "80"],
+                        ["30", "x", "80"],
+                        ["40", "x", "80"],
+                      ],
+                      sizes: ["ml", "l", "ml", "l"],
+                    },
+                    optionSelected: ["size", "medium"],
+                  },
+                  {
+                    title: "Polyptych Small",
+                    pictures: {
+                      texts: [
+                        ["22.5", "x", "60"],
+                        ["30", "x", "60"],
+                        ["22.5", "x", "60"],
+                        ["30", "x", "60"],
+                      ],
+                      sizes: ["ml", "l", "ml", "l"],
+                    },
+                    optionSelected: ["size", "small"],
+                  },
+                ]}
+                handleOptionSelected={handleOptionSelected}
+              />
+            )}
+            {distributionId === "triptych" && (
+              <BoxPicturesContainer
+                boxes={[
+                  {
+                    title: "Triptych Large",
+                    pictures: {
+                      texts: [
+                        ["50", "x", "100"],
+                        ["50", "x", "100"],
+                        ["50", "x", "100"],
+                      ],
+                      sizes: ["l", "l", "l"],
+                    },
+                    optionSelected: ["size", "large"],
+                  },
+                  {
+                    title: "Triptych Medium",
+                    pictures: {
+                      texts: [
+                        ["40", "x", "80"],
+                        ["40", "x", "80"],
+                        ["40", "x", "80"],
+                      ],
+                      sizes: ["m", "m", "m"],
+                    },
+                    optionSelected: ["size", "medium"],
+                  },
+                  {
+                    title: "Triptych Small",
+                    pictures: {
+                      texts: [
+                        ["30", "x", "60"],
+                        ["30", "x", "60"],
+                        ["30", "x", "60"],
+                      ],
+                      sizes: ["s", "s", "s"],
+                    },
+                    optionSelected: ["size", "small"],
+                  },
+                ]}
+                handleOptionSelected={handleOptionSelected}
+              />
+            )}
+            {distributionId === "triptychSquare" && (
+              <BoxPicturesContainer
+                boxes={[
+                  {
+                    title: "Triptych Square Large",
+                    pictures: {
+                      texts: [
+                        ["50", "x", "50"],
+                        ["50", "x", "50"],
+                        ["50", "x", "50"],
+                      ],
+                      sizes: ["l-sq", "l-sq", "l-sq"],
+                    },
+                    optionSelected: ["size", "large"],
+                  },
+                  {
+                    title: "Triptych Square Medium",
+                    pictures: {
+                      texts: [
+                        ["40", "x", "40"],
+                        ["40", "x", "40"],
+                        ["40", "x", "40"],
+                      ],
+                      sizes: ["m-sq", "m-sq", "m-sq"],
+                    },
+                    optionSelected: ["size", "medium"],
+                  },
+                  {
+                    title: "Triptych Square Small",
+                    pictures: {
+                      texts: [
+                        ["30", "x", "30"],
+                        ["30", "x", "30"],
+                        ["30", "x", "30"],
+                      ],
+                      sizes: ["s-sq", "s-sq", "s-sq"],
+                    },
+                    optionSelected: ["size", "small"],
+                  },
+                ]}
+                handleOptionSelected={handleOptionSelected}
+              />
+            )}
+            {distributionId === "triptychCircular" && (
+              <BoxPicturesContainer
+                boxes={[
+                  {
+                    title: "Triptych Circular Large",
+                    pictures: {
+                      texts: [["50Ø"], ["50Ø"], ["50Ø"]],
+                      sizes: ["l-cl", "l-cl", "l-cl"],
+                    },
+                    optionSelected: ["size", "large"],
+                  },
+                  {
+                    title: "Triptych Circular Medium",
+                    pictures: {
+                      texts: [["40Ø"], ["40Ø"], ["40Ø"]],
+                      sizes: ["m-cl", "m-cl", "m-cl"],
+                    },
+                    optionSelected: ["size", "medium"],
+                  },
+                  {
+                    title: "Triptych Circular Small",
+                    pictures: {
+                      texts: [["30Ø"], ["30Ø"], ["30Ø"]],
+                      sizes: ["s-cl", "s-cl", "s-cl"],
+                    },
+                    optionSelected: ["size", "small"],
+                  },
+                ]}
+                handleOptionSelected={handleOptionSelected}
+              />
+            )}
+            {distributionId === "custom" && (
               <div className="createPicture-box-show-img">
-                <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
-                </button>
-                <div className="createPicture-span-btn-file">
-                  <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
-                  <label
-                    className={
-                      images?.imageUploaded !== homeFrameFull
-                        ? "createPicture-btn-file max-w-156"
-                        : "createPicture-btn-file-center"
-                    }
+                <div className="w-90">
+                  <button
+                    className="createPicture-btn-previus"
+                    onClick={() => handleOptionSelected("distribution", "")}
                   >
-                    <input className="d-none" type="file" onChange={handleFileUpload} />
-                    <span>Browse Image</span>
-                  </label>
-                </div>
-                <div className="createPicture-image-final" ref={containerImgsRef}>
-                  {images?.imageDistribution && (
-                    <img
-                      className={`createPicture-image-uploaded ${sizeId === "large" ? "wh-81" : ""} ${
-                        sizeId === "medium" ? "wh-71" : ""
-                      } ${sizeId === "small" ? "wh-61" : ""}`}
-                      alt="select image"
-                      src={images?.imageUploaded}
-                    />
-                  )}
-                  <img className="createPicture-image-frame" alt="frame" src={images?.imageDistribution} />
-                </div>
-              </div>
-            )}
-          </>
-        )}
-        {distributionId === "polyptychSameHeight" && (
-          <>
-            {sizeId === undefined && (
-              <>
-                <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
-                </button>
-                <BoxPicturesContainer
-                  boxes={[
-                    {
-                      title: "Polyptych Large",
-                      pictures: {
-                        texts: [
-                          ["37.5", "x", "100"],
-                          ["50", "x", "100"],
-                          ["37.5", "x", "100"],
-                          ["50", "x", "100"],
-                        ],
-                        sizes: ["ml", "l", "ml", "l"],
-                      },
-                      optionSelected: ["size", "large"],
-                    },
-                    {
-                      title: "Polyptych Medium",
-                      pictures: {
-                        texts: [
-                          ["30", "x", "80"],
-                          ["40", "x", "80"],
-                          ["30", "x", "80"],
-                          ["40", "x", "80"],
-                        ],
-                        sizes: ["ml", "l", "ml", "l"],
-                      },
-                      optionSelected: ["size", "medium"],
-                    },
-                    {
-                      title: "Polyptych Small",
-                      pictures: {
-                        texts: [
-                          ["22.5", "x", "60"],
-                          ["30", "x", "60"],
-                          ["22.5", "x", "60"],
-                          ["30", "x", "60"],
-                        ],
-                        sizes: ["ml", "l", "ml", "l"],
-                      },
-                      optionSelected: ["size", "small"],
-                    },
-                  ]}
-                  handleOptionSelected={handleOptionSelected}
-                />
-              </>
-            )}
-            {sizeId !== undefined && (
-              <div className="createPicture-box-show-img">
-                <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
-                </button>
-                <div className="createPicture-span-btn-file">
-                  <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
-                  <label
-                    className={
-                      images?.imageUploaded !== homeFrameFull
-                        ? "createPicture-btn-file max-w-156"
-                        : "createPicture-btn-file-center"
-                    }
-                  >
-                    <input className="d-none" type="file" onChange={handleFileUpload} />
-                    <span>Browse Image</span>
-                  </label>
-                </div>
-                <div className="createPicture-image-final" ref={containerImgsRef}>
-                  {images?.imageDistribution && (
-                    <img
-                      className={`createPicture-image-uploaded ${sizeId === "large" ? "wh-81" : ""} ${
-                        sizeId === "medium" ? "wh-71" : ""
-                      } ${sizeId === "small" ? "wh-61" : ""}`}
-                      alt="select image"
-                      src={images?.imageUploaded}
-                    />
-                  )}
-                  <img className="createPicture-image-frame" alt="frame" src={images?.imageDistribution} />
-                </div>
-              </div>
-            )}
-          </>
-        )}
-        {distributionId === "triptych" && (
-          <>
-            {sizeId === undefined && (
-              <>
-                <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
-                </button>
-                <BoxPicturesContainer
-                  boxes={[
-                    {
-                      title: "Triptych Large",
-                      pictures: {
-                        texts: [
-                          ["50", "x", "100"],
-                          ["50", "x", "100"],
-                          ["50", "x", "100"],
-                        ],
-                        sizes: ["l", "l", "l"],
-                      },
-                      optionSelected: ["size", "large"],
-                    },
-                    {
-                      title: "Triptych Medium",
-                      pictures: {
-                        texts: [
-                          ["40", "x", "80"],
-                          ["40", "x", "80"],
-                          ["40", "x", "80"],
-                        ],
-                        sizes: ["m", "m", "m"],
-                      },
-                      optionSelected: ["size", "medium"],
-                    },
-                    {
-                      title: "Triptych Small",
-                      pictures: {
-                        texts: [
-                          ["30", "x", "60"],
-                          ["30", "x", "60"],
-                          ["30", "x", "60"],
-                        ],
-                        sizes: ["s", "s", "s"],
-                      },
-                      optionSelected: ["size", "small"],
-                    },
-                  ]}
-                  handleOptionSelected={handleOptionSelected}
-                />
-              </>
-            )}
-            {sizeId !== undefined && (
-              <div className="createPicture-box-show-img">
-                <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
-                </button>
-                <div className="createPicture-span-btn-file">
-                  <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
-                  <label
-                    className={
-                      images?.imageUploaded !== homeFrameFull
-                        ? "createPicture-btn-file max-w-156"
-                        : "createPicture-btn-file-center"
-                    }
-                  >
-                    <input className="d-none" type="file" onChange={handleFileUpload} />
-                    <span>Browse Image</span>
-                  </label>
-                </div>
-                <div className="createPicture-image-final" ref={containerImgsRef}>
-                  {images?.imageDistribution && (
-                    <img
-                      className={`createPicture-image-uploaded ${sizeId === "large" ? "wh-81" : ""} ${
-                        sizeId === "medium" ? "wh-71" : ""
-                      } ${sizeId === "small" ? "wh-61" : ""}`}
-                      alt="select image"
-                      src={images?.imageUploaded}
-                    />
-                  )}
-                  <img className="createPicture-image-frame" alt="frame" src={images?.imageDistribution} />
-                </div>
-              </div>
-            )}
-          </>
-        )}
-        {distributionId === "triptychSquare" && (
-          <>
-            {sizeId === undefined && (
-              <>
-                <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
-                </button>
-                <BoxPicturesContainer
-                  boxes={[
-                    {
-                      title: "Triptych Square Large",
-                      pictures: {
-                        texts: [
-                          ["50", "x", "50"],
-                          ["50", "x", "50"],
-                          ["50", "x", "50"],
-                        ],
-                        sizes: ["l-sq", "l-sq", "l-sq"],
-                      },
-                      optionSelected: ["size", "large"],
-                    },
-                    {
-                      title: "Triptych Square Medium",
-                      pictures: {
-                        texts: [
-                          ["40", "x", "40"],
-                          ["40", "x", "40"],
-                          ["40", "x", "40"],
-                        ],
-                        sizes: ["m-sq", "m-sq", "m-sq"],
-                      },
-                      optionSelected: ["size", "medium"],
-                    },
-                    {
-                      title: "Triptych Square Small",
-                      pictures: {
-                        texts: [
-                          ["30", "x", "30"],
-                          ["30", "x", "30"],
-                          ["30", "x", "30"],
-                        ],
-                        sizes: ["s-sq", "s-sq", "s-sq"],
-                      },
-                      optionSelected: ["size", "small"],
-                    },
-                  ]}
-                  handleOptionSelected={handleOptionSelected}
-                />
-              </>
-            )}
-            {sizeId !== undefined && (
-              <div className="createPicture-box-show-img">
-                <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
-                </button>
-                <div className="createPicture-span-btn-file">
-                  <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
-                  <label
-                    className={
-                      images?.imageUploaded !== homeFrameFull
-                        ? "createPicture-btn-file max-w-156"
-                        : "createPicture-btn-file-center"
-                    }
-                  >
-                    <input className="d-none" type="file" onChange={handleFileUpload} />
-                    <span>Browse Image</span>
-                  </label>
-                </div>
-                <div className="createPicture-image-final" ref={containerImgsRef}>
-                  {images?.imageDistribution && (
-                    <img
-                      className={`createPicture-image-uploaded ${sizeId === "large" ? "wh-81" : ""} ${
-                        sizeId === "medium" ? "wh-71" : ""
-                      } ${sizeId === "small" ? "wh-61" : ""}`}
-                      alt="select image"
-                      src={images?.imageUploaded}
-                    />
-                  )}
-                  <img className="createPicture-image-frame" alt="frame" src={images?.imageDistribution} />
-                </div>
-              </div>
-            )}
-          </>
-        )}
-        {distributionId === "triptychCircular" && (
-          <>
-            {sizeId === undefined && (
-              <>
-                <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
-                </button>
-                <BoxPicturesContainer
-                  boxes={[
-                    {
-                      title: "Triptych Circular Large",
-                      pictures: {
-                        texts: [["50Ø"], ["50Ø"], ["50Ø"]],
-                        sizes: ["l-cl", "l-cl", "l-cl"],
-                      },
-                      optionSelected: ["size", "large"],
-                    },
-                    {
-                      title: "Triptych Circular Medium",
-                      pictures: {
-                        texts: [["40Ø"], ["40Ø"], ["40Ø"]],
-                        sizes: ["m-cl", "m-cl", "m-cl"],
-                      },
-                      optionSelected: ["size", "medium"],
-                    },
-                    {
-                      title: "Triptych Circular Small",
-                      pictures: {
-                        texts: [["30Ø"], ["30Ø"], ["30Ø"]],
-                        sizes: ["s-cl", "s-cl", "s-cl"],
-                      },
-                      optionSelected: ["size", "small"],
-                    },
-                  ]}
-                  handleOptionSelected={handleOptionSelected}
-                />
-              </>
-            )}
-            {sizeId !== undefined && (
-              <div className="createPicture-box-show-img">
-                <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("size", "")}>
-                  <img className="createPicture-svg" src={arrowLeft} alt="previous" />
-                </button>
-                <div className="createPicture-span-btn-file">
-                  <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
-                  <label
-                    className={
-                      images?.imageUploaded !== homeFrameFull
-                        ? "createPicture-btn-file max-w-156"
-                        : "createPicture-btn-file-center"
-                    }
-                  >
-                    <input className="d-none" type="file" onChange={handleFileUpload} />
-                    <span>Browse Image</span>
-                  </label>
-                </div>
-                <div className="createPicture-image-final" ref={containerImgsRef}>
-                  {images?.imageDistribution && (
-                    <img
-                      className={`createPicture-image-uploaded ${sizeId === "large" ? "wh-81" : ""} ${
-                        sizeId === "medium" ? "wh-71" : ""
-                      } ${sizeId === "small" ? "wh-61" : ""}`}
-                      alt="select image"
-                      src={images?.imageUploaded}
-                    />
-                  )}
-                  <img className="createPicture-image-frame" alt="frame" src={images?.imageDistribution} />
-                </div>
-              </div>
-            )}
-          </>
-        )}
-        {distributionId === "custom" && (
-          <div className="createPicture-box-show-img">
-            <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
-              <img className="createPicture-svg" src={arrowLeft} alt="previous" />
-            </button>
-            <div className="createPicture-span-btn-file">
-              <span className="createPicture-span">Recommended Aspect Ratio 16/9</span>
-              <label
-                className={
-                  images?.imageUploaded !== homeFrameFull
-                    ? "createPicture-btn-file max-w-156"
-                    : "createPicture-btn-file-center"
-                }
-              >
-                <input className="d-none" type="file" onChange={handleFileUpload} />
-                <span>Browse Image</span>
-              </label>
-            </div>
-            <div className="createPicture-image-final" ref={containerImgsRef}>
-              <div className="createPicture-container-frames">
-                {picturesPlaced.length > 0 &&
-                  picturesPlaced?.map((picture) => (
-                    <div
-                      className="image-cropped"
-                      style={{
-                        height: picture.height + "%",
-                        left: picture.left + "%",
-                        top: picture.top + "%",
-                        width: picture.width + "%",
-                        borderRadius: picture.borderRadius + "%",
-                      }}
-                      key={picture.id}
-                    >
-                      <img
-                        className="image-cropped-calc"
-                        style={{
-                          height: (100 / picture.height) * 100 + "%",
-                          left: (100 / picture.width) * picture.left * -1 + "%",
-                          top: (100 / picture.height) * picture.top * -1 + "%",
-                          width: (100 / picture.width) * 100 + "%",
-                        }}
-                        src={images?.imageUploaded}
-                      />
-                    </div>
-                  ))}
-              </div>
-              <div className="createPicture-container-frames z-index-20 overflow-visible">
-                {picturesPlaced.length > 0 &&
-                  picturesPlaced?.map(({ width, height, left, top, borderRadius }, i) => (
-                    <div key={i}>
-                      <p
-                        className="image-cropped-width"
-                        style={{
-                          left: parseInt(left) + parseInt(width) / 2.5 + "%",
-                          top: parseInt(top) + parseInt(height) - 4 + "%",
-                        }}
-                      >
-                        {Math.round(width * 2.4)}cm
-                      </p>
-                      <p
-                        className="image-cropped-height"
-                        style={{
-                          left: parseInt(left) + parseInt(width) - 3.5 + "%",
-                          top: parseInt(top) + parseInt(height) / 2.5 + "%",
-                        }}
-                      >
-                        {Math.round(height * 1.35)}cm
-                      </p>
-                      <p
-                        className="image-cropped-left"
-                        style={{ left: parseInt(left) + 0.5 + "%", top: parseInt(top) + 1 + "%" }}
-                      >
-                        {Math.round(left * 2.4)}cm
-                      </p>
-                      <p
-                        className="image-cropped-top"
-                        style={{ left: parseInt(left) + 0.5 + "%", top: parseInt(top) + 6 + "%" }}
-                      >
-                        {Math.round(top * 1.35)}cm
-                      </p>
-                      {borderRadius > 0 && (
-                        <p
-                          className="image-cropped-radius"
-                          style={{
-                            left: parseInt(left) + parseInt(width) / 2.5 + "%",
-                            top: parseInt(top) + parseInt(height) / 2.5 + "%",
-                          }}
-                        >
-                          {Math.round(borderRadius)}%
-                        </p>
-                      )}
-                    </div>
-                  ))}
-              </div>
-              <img className="createPicture-image-frame-plant" alt="frame" src={customEmptyPlant} />
-              <img className="createPicture-image-frame" alt="frame" src={customEmpty} />
-            </div>
-            {images?.imageUploaded !== homeFrameFull && (
-              <div className="createPicture-custom-container">
-                <div className="createPicture-custom-buttons">
-                  {picturesPlaced.length > 0 && (
-                    <button className="createPicture-btn-remove-custom" onClick={handleRemovePicture}>
-                      Remove Last Picture
-                    </button>
-                  )}
-                  <button className="createPicture-btn-add-custom" onClick={handleAddPicture}>
-                    Add New Picture
+                    <img className="createPicture-svg" src={arrowLeft} alt="previous" />
                   </button>
                 </div>
-                {picturesPlaced.length > 0 && (
-                  <div className="createPicture-custom-box-container">
-                    <div className="createPicture-custom-box">
-                      <h5 className="createPicture-custom-title color-light-blue">Width</h5>
-                      <input
-                        className="createPicture-input-range"
-                        type="range"
-                        min="0"
-                        max={100 - picturesPlaced[picturesPlaced.length - 1]?.left || ""}
-                        name="width"
-                        value={picturesPlaced[picturesPlaced.length - 1]?.width || ""}
-                        onChange={handleChangeOptionsPicture}
-                      />
-                      <input
-                        className="createPicture-input-number color-light-blue"
-                        type="number"
-                        name="width"
-                        min="0"
-                        max={100 - picturesPlaced[picturesPlaced.length - 1]?.left || ""}
-                        value={Math.round(picturesPlaced[picturesPlaced.length - 1]?.width * 2.4) || ""}
-                        onChange={handleChangeOptionsPicture}
-                      />
-                      <p className="createPicture-custom-text color-light-blue">cm</p>
+                <div className="createPicture-btn-file-uploaded">
+                  <label
+                    className={
+                      images?.imageUploaded !== homeFrameFull
+                        ? "createPicture-btn-file max-w-156"
+                        : "createPicture-btn-file-center"
+                    }
+                  >
+                    <input className="d-none" type="file" onChange={handleFileUpload} />
+                    <span>Browse Image</span>
+                  </label>
+                </div>
+                <div className="createPicture-image-final" ref={containerImgsRef}>
+                  <div
+                    className="createPicture-container-frames"
+                    style={{ height: `${images?.height}%`, width: `${images?.width}%`, top: `${images?.top}%` }}
+                  >
+                    {picturesPlaced.length > 0 &&
+                      picturesPlaced?.map((picture) => (
+                        <div
+                          className="image-cropped"
+                          style={{
+                            height: picture.height + "%",
+                            left: picture.left + "%",
+                            top: picture.top + "%",
+                            width: picture.width + "%",
+                            borderRadius: picture.borderRadius + "%",
+                          }}
+                          key={picture.id}
+                        >
+                          <img
+                            className="image-cropped-calc"
+                            style={{
+                              height: (100 / picture.height) * 100 + "%",
+                              left: (100 / picture.width) * picture.left * -1 + "%",
+                              top: (100 / picture.height) * picture.top * -1 + "%",
+                              width: (100 / picture.width) * 100 + "%",
+                            }}
+                            src={images?.imageUploaded}
+                          />
+                        </div>
+                      ))}
+                  </div>
+                  <div className="createPicture-container-frames z-index-20 overflow-visible">
+                    {picturesPlaced.length > 0 &&
+                      picturesPlaced?.map(({ width, height, left, top, borderRadius }, i) => (
+                        <div key={i}>
+                          <p
+                            className="image-cropped-width"
+                            style={{
+                              left: parseInt(left) + parseInt(width) / 2.5 + "%",
+                              top: parseInt(top) + parseInt(height) - 4 + "%",
+                            }}
+                          >
+                            {Math.round(width * 2.4)}cm
+                          </p>
+                          <p
+                            className="image-cropped-height"
+                            style={{
+                              left: parseInt(left) + parseInt(width) - 3.5 + "%",
+                              top: parseInt(top) + parseInt(height) / 2.5 + "%",
+                            }}
+                          >
+                            {Math.round(height * 1.35)}cm
+                          </p>
+                          <p
+                            className="image-cropped-left"
+                            style={{ left: parseInt(left) + 0.5 + "%", top: parseInt(top) + 1 + "%" }}
+                          >
+                            {Math.round(left * 2.4)}cm
+                          </p>
+                          <p
+                            className="image-cropped-top"
+                            style={{ left: parseInt(left) + 0.5 + "%", top: parseInt(top) + 6 + "%" }}
+                          >
+                            {Math.round(top * 1.35)}cm
+                          </p>
+                          {borderRadius > 0 && (
+                            <p
+                              className="image-cropped-radius"
+                              style={{
+                                left: parseInt(left) + parseInt(width) / 2.5 + "%",
+                                top: parseInt(top) + parseInt(height) / 2.5 + "%",
+                              }}
+                            >
+                              {Math.round(borderRadius)}%
+                            </p>
+                          )}
+                        </div>
+                      ))}
+                  </div>
+                  <img className="createPicture-image-frame-plant" alt="frame" src={customEmptyPlant} />
+                  <img className="createPicture-image-frame" alt="frame" src={customEmpty} />
+                </div>
+                {images?.imageUploaded !== homeFrameFull && (
+                  <div className="createPicture-custom-container">
+                    <div className="createPicture-custom-buttons">
+                      {picturesPlaced.length > 0 && (
+                        <button className="createPicture-btn-remove-custom" onClick={handleRemovePicture}>
+                          Remove Last Picture
+                        </button>
+                      )}
+                      <button className="createPicture-btn-add-custom" onClick={handleAddPicture}>
+                        Add New Picture
+                      </button>
                     </div>
-                    <div className="createPicture-custom-box">
-                      <h5 className="createPicture-custom-title color-light-yellow">Height</h5>
-                      <input
-                        className="createPicture-input-range"
-                        type="range"
-                        min="0"
-                        max={100 - picturesPlaced[picturesPlaced.length - 1]?.top || ""}
-                        name="height"
-                        value={picturesPlaced[picturesPlaced.length - 1]?.height || ""}
-                        onChange={handleChangeOptionsPicture}
-                      />
-                      <input
-                        className="createPicture-input-number color-light-yellow"
-                        type="number"
-                        name="height"
-                        min="0"
-                        max={100 - picturesPlaced[picturesPlaced.length - 1]?.top || ""}
-                        value={Math.round(picturesPlaced[picturesPlaced.length - 1]?.height * 1.35) || ""}
-                        onChange={handleChangeOptionsPicture}
-                      />
-                      <p className="createPicture-custom-text color-light-yellow">cm</p>
-                    </div>
-                    <div className="createPicture-custom-box">
-                      <h5 className="createPicture-custom-title color-light-pink">Left</h5>
-                      <input
-                        className="createPicture-input-range"
-                        type="range"
-                        min="0"
-                        max={99.9 - picturesPlaced[picturesPlaced.length - 1]?.width || ""}
-                        name="left"
-                        value={picturesPlaced[picturesPlaced.length - 1]?.left || ""}
-                        onChange={handleChangeOptionsPicture}
-                      />
-                      <input
-                        className="createPicture-input-number color-light-pink"
-                        type="number"
-                        name="left"
-                        min="0"
-                        max={99.9 - picturesPlaced[picturesPlaced.length - 1]?.width || ""}
-                        value={Math.round(picturesPlaced[picturesPlaced.length - 1]?.left * 2.4) || ""}
-                        onChange={handleChangeOptionsPicture}
-                      />
-                      <p className="createPicture-custom-text color-light-pink">cm</p>
-                    </div>
-                    <div className="createPicture-custom-box">
-                      <h5 className="createPicture-custom-title color-light-cyan">Top</h5>
-                      <input
-                        className="createPicture-input-range"
-                        type="range"
-                        min="0"
-                        max={99.9 - picturesPlaced[picturesPlaced.length - 1]?.height || ""}
-                        name="top"
-                        value={picturesPlaced[picturesPlaced.length - 1]?.top || ""}
-                        onChange={handleChangeOptionsPicture}
-                      />
-                      <input
-                        className="createPicture-input-number color-light-cyan"
-                        type="number"
-                        name="top"
-                        min="0"
-                        max={99.9 - picturesPlaced[picturesPlaced.length - 1]?.height || ""}
-                        value={Math.round(picturesPlaced[picturesPlaced.length - 1]?.top * 1.35) || ""}
-                        onChange={handleChangeOptionsPicture}
-                      />
-                      <p className="createPicture-custom-text color-light-cyan">cm</p>
-                    </div>
-                    <div className="createPicture-custom-box">
-                      <h5 className="createPicture-custom-title">Radius</h5>
-                      <input
-                        className="createPicture-input-range"
-                        type="range"
-                        min="0"
-                        max="50"
-                        name="borderRadius"
-                        value={picturesPlaced[picturesPlaced.length - 1]?.borderRadius || ""}
-                        onChange={handleChangeOptionsPicture}
-                      />
-                      <input
-                        className="createPicture-input-number"
-                        type="number"
-                        name="borderRadius"
-                        min="0"
-                        max="50"
-                        value={picturesPlaced[picturesPlaced.length - 1]?.borderRadius || ""}
-                        onChange={handleChangeOptionsPicture}
-                      />
-                      <p className="createPicture-custom-text">%</p>
-                    </div>
+                    {picturesPlaced.length > 0 && (
+                      <div className="createPicture-custom-box-container">
+                        <div className="createPicture-custom-box">
+                          <h5 className="createPicture-custom-title color-light-blue">Width</h5>
+                          <input
+                            className="createPicture-input-range"
+                            type="range"
+                            min="0"
+                            max={100 - picturesPlaced[picturesPlaced.length - 1]?.left || ""}
+                            name="width"
+                            value={picturesPlaced[picturesPlaced.length - 1]?.width || ""}
+                            onChange={handleChangeOptionsPicture}
+                          />
+                          <input
+                            className="createPicture-input-number color-light-blue"
+                            type="number"
+                            name="width"
+                            min="0"
+                            max={100 - picturesPlaced[picturesPlaced.length - 1]?.left || ""}
+                            value={Math.round(picturesPlaced[picturesPlaced.length - 1]?.width * 2.4) || ""}
+                            onChange={handleChangeOptionsPicture}
+                          />
+                          <p className="createPicture-custom-text color-light-blue">cm</p>
+                        </div>
+                        <div className="createPicture-custom-box">
+                          <h5 className="createPicture-custom-title color-light-yellow">Height</h5>
+                          <input
+                            className="createPicture-input-range"
+                            type="range"
+                            min="0"
+                            max={100 - picturesPlaced[picturesPlaced.length - 1]?.top || ""}
+                            name="height"
+                            value={picturesPlaced[picturesPlaced.length - 1]?.height || ""}
+                            onChange={handleChangeOptionsPicture}
+                          />
+                          <input
+                            className="createPicture-input-number color-light-yellow"
+                            type="number"
+                            name="height"
+                            min="0"
+                            max={100 - picturesPlaced[picturesPlaced.length - 1]?.top || ""}
+                            value={Math.round(picturesPlaced[picturesPlaced.length - 1]?.height * 1.35) || ""}
+                            onChange={handleChangeOptionsPicture}
+                          />
+                          <p className="createPicture-custom-text color-light-yellow">cm</p>
+                        </div>
+                        <div className="createPicture-custom-box">
+                          <h5 className="createPicture-custom-title color-light-pink">Left</h5>
+                          <input
+                            className="createPicture-input-range"
+                            type="range"
+                            min="0"
+                            max={99.9 - picturesPlaced[picturesPlaced.length - 1]?.width || ""}
+                            name="left"
+                            value={picturesPlaced[picturesPlaced.length - 1]?.left || ""}
+                            onChange={handleChangeOptionsPicture}
+                          />
+                          <input
+                            className="createPicture-input-number color-light-pink"
+                            type="number"
+                            name="left"
+                            min="0"
+                            max={99.9 - picturesPlaced[picturesPlaced.length - 1]?.width || ""}
+                            value={Math.round(picturesPlaced[picturesPlaced.length - 1]?.left * 2.4) || ""}
+                            onChange={handleChangeOptionsPicture}
+                          />
+                          <p className="createPicture-custom-text color-light-pink">cm</p>
+                        </div>
+                        <div className="createPicture-custom-box">
+                          <h5 className="createPicture-custom-title color-light-cyan">Top</h5>
+                          <input
+                            className="createPicture-input-range"
+                            type="range"
+                            min="0"
+                            max={99.9 - picturesPlaced[picturesPlaced.length - 1]?.height || ""}
+                            name="top"
+                            value={picturesPlaced[picturesPlaced.length - 1]?.top || ""}
+                            onChange={handleChangeOptionsPicture}
+                          />
+                          <input
+                            className="createPicture-input-number color-light-cyan"
+                            type="number"
+                            name="top"
+                            min="0"
+                            max={99.9 - picturesPlaced[picturesPlaced.length - 1]?.height || ""}
+                            value={Math.round(picturesPlaced[picturesPlaced.length - 1]?.top * 1.35) || ""}
+                            onChange={handleChangeOptionsPicture}
+                          />
+                          <p className="createPicture-custom-text color-light-cyan">cm</p>
+                        </div>
+                        <div className="createPicture-custom-box">
+                          <h5 className="createPicture-custom-title">Radius</h5>
+                          <input
+                            className="createPicture-input-range"
+                            type="range"
+                            min="0"
+                            max="50"
+                            name="borderRadius"
+                            value={picturesPlaced[picturesPlaced.length - 1]?.borderRadius || ""}
+                            onChange={handleChangeOptionsPicture}
+                          />
+                          <input
+                            className="createPicture-input-number"
+                            type="number"
+                            name="borderRadius"
+                            min="0"
+                            max="50"
+                            value={picturesPlaced[picturesPlaced.length - 1]?.borderRadius || ""}
+                            onChange={handleChangeOptionsPicture}
+                          />
+                          <p className="createPicture-custom-text">%</p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
             )}
+          </>
+        )}
+        {sizeId !== undefined && (
+          <BoxShowImgContainer
+            handleOptionSelected={handleOptionSelected}
+            handleFileUpload={handleFileUpload}
+            containerImgsRef={containerImgsRef}
+            images={images}
+          />
+        )}
+
+        {distributionId !== "custom" && sizeId !== undefined && (
+          <div className="createPicture-custom-box-container">
+            <div className="createPicture-custom-box lg_w-30">
+              <label className="createPicture-custom-title">Top</label>
+              <input
+                className="createPicture-input-range"
+                type="range"
+                min="0"
+                max="50"
+                name="top"
+                value={images?.top}
+                onChange={handleChangeDistributionSize}
+              />
+            </div>
+            <div className="createPicture-custom-box lg_w-30">
+              <label className="createPicture-custom-title">Height</label>
+              <input
+                className="createPicture-input-range"
+                type="range"
+                min="5"
+                max="81"
+                name="height"
+                value={images?.height}
+                onChange={handleChangeDistributionSize}
+              />
+            </div>
+            <div className="createPicture-custom-box lg_w-30">
+              <label className="createPicture-custom-title">Width</label>
+              <input
+                className="createPicture-input-range"
+                type="range"
+                min="5"
+                max="81"
+                name="width"
+                value={images?.width}
+                onChange={handleChangeDistributionSize}
+              />
+            </div>
           </div>
         )}
-        {(sizeId !== undefined || distributionId === "custom") && images?.imageUploaded !== homeFrameFull && (
+
+        {(distributionId === "custom" || sizeId !== undefined) && images?.imageUploaded !== homeFrameFull && (
           <div className="w-90">
             <button className="createPicture-btn-addToCart" onClick={uploadThisSection}>
               Add to cart

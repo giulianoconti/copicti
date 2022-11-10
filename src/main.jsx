@@ -9,7 +9,7 @@ import { Contact } from "./routes/contact/Contact";
 import { MyCart } from "./routes/myCart/MyCart";
 import { LoginView } from "./routes/loginView/LoginView";
 import { AuthProvider } from "./context/authContext";
-import { Admin } from "./routes/admin/Admin";
+import { AdminProducts } from "./routes/admin/AdminProducts";
 import { AccessIfLogged } from "./components/protectedRoutes/AccessIfLogged";
 import "./index.css";
 import { AccessIfYouAreAdmin } from "./components/protectedRoutes/AccessIfYouAreAdmin";
@@ -36,11 +36,11 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           }
         />
         <Route
-          path="admin"
+          path="/admin/products"
           element={
             <AccessIfLogged>
               <AccessIfYouAreAdmin>
-                <Admin />
+                <AdminProducts />
               </AccessIfYouAreAdmin>
             </AccessIfLogged>
           }

@@ -1,9 +1,19 @@
 import React from "react";
+import { useParams } from "react-router-dom";
+import arrowLeft from "../../assets/arrow-left.svg";
 import PropTypes from "prop-types";
 
 export const BoxPicturesContainer = ({ boxes = [], handleOptionSelected }) => {
+  const { distributionId } = useParams();
   return (
     <>
+      {distributionId && (
+        <div className="w-90">
+          <button className="createPicture-btn-previus" onClick={() => handleOptionSelected("distribution", "")}>
+            <img className="createPicture-svg" src={arrowLeft} alt="previous" />
+          </button>
+        </div>
+      )}
       {boxes.map((box) => (
         <button
           className="createPicture-box"
