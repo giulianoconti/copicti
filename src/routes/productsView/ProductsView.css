@@ -95,16 +95,6 @@
   transition: all 0.3s ease;
 }
 
-.products-filter-frame:hover {
-  background-color: var(--color-1);
-  scale: 1.1;
-}
-
-.products-filter-frame:hover .products-filter-title {
-  color: var(--color-1);
-  scale: 1.1;
-}
-
 .products-filter-active {
   background-color: var(--color-1);
   border: 2px solid var(--color-4);
@@ -182,10 +172,6 @@
   padding: 4px;
   transition: scale 0.3s ease;
   width: 200px;
-}
-
-.products-item:hover {
-  scale: 1.1;
 }
 
 .products-item-img {
@@ -296,10 +282,6 @@
   padding: 4px;
 }
 
-.products-openProduct-btn:hover {
-  background-color: rgb(218, 199, 161);
-}
-
 .products-page-container {
   align-items: center;
   display: flex;
@@ -324,10 +306,6 @@
   position: absolute;
   transition: background-color 0.3s ease;
   width: 48px;
-}
-
-.products-page-btn:hover {
-  background-color: var(--color-1);
 }
 
 .products-page-btn-active {
@@ -372,6 +350,30 @@
   margin-left: 344px;
 }
 
+@media (pointer: fine) {
+  .products-filter-frame:hover {
+    background-color: var(--color-1);
+    scale: 1.1;
+  }
+
+  .products-filter-frame:hover .products-filter-title {
+    color: var(--color-1);
+    scale: 1.1;
+  }
+
+  .products-item:hover {
+    scale: 1.1;
+  }
+
+  .products-openProduct-btn:hover {
+    background-color: rgb(218, 199, 161);
+  }
+
+  .products-page-btn:hover {
+    background-color: var(--color-1);
+  }
+}
+
 @media screen and (max-width: 768px) {
   .products-container {
     padding: 144px 0 0 0;
@@ -414,43 +416,13 @@
     width: 13.2vw;
   }
 
-  .products-filter-frame:hover {
-    background-color: rgb(210, 195, 175);
-    scale: 1;
-  }
-  
-  .products-filter-frame:hover .products-filter-title {
-    color: var(--color-2);
-    scale: 1;
-  }
-
-  .products-filter-frame:active {
-    background-color: var(--color-1);
-    scale: 1.1;
-  }
-  
-  .products-filter-frame:active .products-filter-title {
-    color: var(--color-1);
-    scale: 1.1;
-  }
-
   .products-filter-active {
     background-color: var(--color-1);
     border: 2px solid var(--color-4);
     cursor: pointer;
   }
-  
-  .products-filter-active .products-filter-title {
-    color: var(--color-1);
-  }
 
-  .products-filter-active:hover {
-    background-color: var(--color-1);
-    border: 2px solid var(--color-4);
-    cursor: pointer;
-  }
-  
-  .products-filter-active:hover .products-filter-title {
+  .products-filter-active .products-filter-title {
     color: var(--color-1);
   }
 
@@ -461,14 +433,6 @@
     border-top: 2px solid var(--color-6);
     margin: 40px 0 8px 0;
     width: 100%;
-  }
-
-  .products-item:hover {
-    scale: 1;
-  }
-
-  .products-item:active {
-    scale: 1.1;
   }
 
   .products-item-name {
@@ -586,14 +550,6 @@
     color: var(--color-6);
     font-size: 12px;
     padding: 4px;
-  }
-
-  .products-openProduct-btn:hover {
-    background-color: rgb(196, 179, 144);
-  }
-
-  .products-openProduct-btn:active {
-    background-color: rgb(218, 199, 161);
   }
 
   .products-page-btn {
