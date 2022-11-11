@@ -48,28 +48,6 @@ export const AdminProducts = () => {
     }
   };
 
-/*   const addProduct = async () => {
-    if (
-      adminNewProduct.id !== "" &&
-      adminNewProduct.name !== "" &&
-      adminNewProduct.description !== "" &&
-      adminNewProduct.price !== "" &&
-      adminNewProduct.image !== ""
-    ) {
-      await postProduct(adminNewProduct);
-      setAdminReload(!adminReload);
-      setAdminNewProduct({
-        id: "",
-        name: "",
-        description: "",
-        price: "",
-        image: "",
-      });
-    } else {
-      alert("Please fill all the fields");
-    }
-  }; */
-
   const editThisProduct = (product) => {
     console.log(product);
   };
@@ -82,10 +60,10 @@ export const AdminProducts = () => {
 
   return (
     <div className="adminProducts-screen">
+      <h1 className="adminProducts-title">Products</h1>
       <div className="adminProducts-header">
-        <h1>Products</h1>
         <div className="adminProducts-add-container">
-        <input
+          <input
             className="adminProducts-add-input"
             type="text"
             placeholder="Id"
@@ -129,7 +107,7 @@ export const AdminProducts = () => {
           />
         </div>
       </div>
-      <div className="w-100">
+      <div className="adminProducts-CreatePictureView">
         <CreatePictureView
           adminOpen={true}
           adminNewProduct={adminNewProduct}

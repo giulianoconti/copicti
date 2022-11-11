@@ -30,19 +30,22 @@ export const storage = getStorage(app);
 
 export const postProduct = async (data) => {
   console.log("postProducts");
-  let numberOfItemsThatIncludeThisId = "";
-  const lastItemWithIncludeId = await getDocs(collection(db, "products"), where("id", ">=", data.id));
-  const lastItem = lastItemWithIncludeId.docs[lastItemWithIncludeId.docs.length - 1];
-  if (lastItem) {
-    numberOfItemsThatIncludeThisId = lastItemWithIncludeId.docs.filter((item) =>
-      item.data().id.includes(data.id)
-    ).length;
-  }
-  try {
-    await setDoc(doc(db, "products", data.id + " " + numberOfItemsThatIncludeThisId), data);
-    console.log("Document written with ID: ", data.id);
-  } catch (error) {
-    console.error("Error adding document: ", error);
+  if (data) {
+    let numberOfItemsThatIncludeThisId = "";
+    const lastItemWithIncludeId = await getDocs(collection(db, "products"), where("id", ">=", data.id));
+    const lastItem = lastItemWithIncludeId.docs[lastItemWithIncludeId.docs.length - 1];
+    if (lastItem) {
+      numberOfItemsThatIncludeThisId = lastItemWithIncludeId.docs.filter((item) =>
+        item.data().id.includes(data.id)
+      ).length;
+    }
+    try {
+      data.id = data.id + " " + numberOfItemsThatIncludeThisId;
+      await setDoc(doc(db, "products", data.id), data);
+      console.log("Document written with ID: ", data.id);
+    } catch (error) {
+      console.error("Error adding document: ", error);
+    }
   }
 };
 
@@ -111,24 +114,24 @@ export const postImageInStorage = async (file) => {
 
 export const postInStorageProductsImages = async (file, fileId) => {
   console.log("postInStorageProductsImages");
-  let numberOfItemsThatIncludeThisId = "";
-  const lastItemWithIncludeId = await getDocs(collection(db, "products"), where("id", ">=", fileId));
-  const lastItem = lastItemWithIncludeId.docs[lastItemWithIncludeId.docs.length - 1];
-  if (lastItem) {
-    numberOfItemsThatIncludeThisId = lastItemWithIncludeId.docs.filter((item) =>
-      item.data().id.includes(fileId)
-    ).length;
-  }
-  if (file) {
+  if (file && fileId) {
+    let numberOfItemsThatIncludeThisId = "";
+    const lastItemWithIncludeId = await getDocs(collection(db, "products"), where("id", ">=", fileId));
+    const lastItem = lastItemWithIncludeId.docs[lastItemWithIncludeId.docs.length - 1];
+    if (lastItem) {
+      numberOfItemsThatIncludeThisId = lastItemWithIncludeId.docs.filter((item) =>
+        item.data().id.includes(fileId)
+      ).length;
+    }
     const storageRef = ref(storage, "productsImages/" + fileId + " " + numberOfItemsThatIncludeThisId + " " + ".webp");
     const snapshot = await uploadBytes(storageRef, file);
     const url = await getDownloadURL(snapshot.ref);
     console.log("File available at", url);
     return url;
   } else {
-    console.log("No file provided");
+    console.log("No file provided or fileId");
   }
-}
+};
 
 export const getUsers = async () => {
   console.log("getUsers");
@@ -136,7 +139,7 @@ export const getUsers = async () => {
   const usersSnapshot = await getDocs(usersCollection);
   const usersList = usersSnapshot.docs.map((doc) => doc.data());
   return usersList;
-}
+};
 
 export const getUserOrders = async (email) => {
   console.log("getUserOrders");

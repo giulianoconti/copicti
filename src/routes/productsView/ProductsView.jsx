@@ -54,6 +54,11 @@ export const ProductsView = () => {
     }
   };
 
+  const handlePage = (pageNumber) => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setPage(pageNumber);
+  };
+
   if (isLoadingPage) {
     return (
       <div className="products-screen">
@@ -166,8 +171,7 @@ export const ProductsView = () => {
             <IsLoading />
           ) : (
             products.map((product, i) => {
-              if (i > page * 20 - 1 && i < page * 20 + 19) return;
-              1;
+              if (!(i > page * 20 - 21 && i < page * 20 - 1)) return;
               return (
                 <div className="products-item" onClick={() => setOpenProduct(product)} key={product.id}>
                   <img className="products-item-img" src={product.image} alt={"product " + product.id} />
@@ -188,13 +192,15 @@ export const ProductsView = () => {
               <div className="products-openProduct-items">
                 <button className="products-openProduct-close">x</button>
                 <img className="products-openProduct-img" src={openProduct.image} alt={"product " + openProduct.id} />
-                <h3 className="products-openProduct-name">{openProduct.name}</h3>
-                <h5 className="products-openProduct-price">${openProduct.price}</h5>
-                {openProduct.description.split(".").map((line, i) => (
-                  <p className="products-openProduct-description" key={i}>
-                    {line}
-                  </p>
-                ))}
+                <div className="products-openProduct-textContainer">
+                  <h3 className="products-openProduct-name">{openProduct.name}</h3>
+                  <h5 className="products-openProduct-price">${openProduct.price}</h5>
+                  {openProduct.description.split(".").map((line, i) => (
+                    <p className="products-openProduct-description" key={i}>
+                      {line}
+                    </p>
+                  ))}
+                </div>
                 <button className="products-openProduct-btn" onClick={addToCart}>
                   Add to cart
                 </button>
@@ -206,36 +212,36 @@ export const ProductsView = () => {
             {page > 1 && (
               <button
                 className={`products-page-btn products-page-btn-arrows products-page-btn_-${page > 2 ? "3" : "2_5"}`}
-                onClick={() => setPage(page - 1)}
+                onClick={() => handlePage(page - 1)}
               >
                 <img className="products-page-btn-img" src={arrowLeft} alt="left arrow" />
               </button>
             )}
             {page > 2 && (
-              <button className="products-page-btn products-page-btn_-2" onClick={() => setPage(page - 2)}>
+              <button className="products-page-btn products-page-btn_-2" onClick={() => handlePage(page - 2)}>
                 {page - 2}
               </button>
             )}
             {page > 1 && (
-              <button className="products-page-btn products-page-btn_-1" onClick={() => setPage(page - 1)}>
+              <button className="products-page-btn products-page-btn_-1" onClick={() => handlePage(page - 1)}>
                 {page - 1}
               </button>
             )}
-            <button className="products-page-btn products-page-btn-active" onClick={() => setPage(page)}>
+            <button className="products-page-btn products-page-btn-active" onClick={() => handlePage(page)}>
               {page}
             </button>
 
-            <button className="products-page-btn products-page-btn_1" onClick={() => setPage(page + 1)}>
+            <button className="products-page-btn products-page-btn_1" onClick={() => handlePage(page + 1)}>
               {page + 1}
             </button>
 
-            <button className="products-page-btn products-page-btn_2" onClick={() => setPage(page + 2)}>
+            <button className="products-page-btn products-page-btn_2" onClick={() => handlePage(page + 2)}>
               {page + 2}
             </button>
 
             <button
               className="products-page-btn products-page-btn-arrows products-page-btn_3"
-              onClick={() => setPage(page + 1)}
+              onClick={() => handlePage(page + 1)}
             >
               <img className="products-page-btn-img" src={arrowRight} alt="right arrow" />
             </button>

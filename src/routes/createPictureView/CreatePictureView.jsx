@@ -322,29 +322,32 @@ export const CreatePictureView = ({
         idProduct = "AE Triptych Circle Large";
       }
     }
-    html2canvas(containerImgsRef.current, {
-      scale: 1,
-      willReadFrequently: true,
-    }).then(async (canvas) => {
-      const link = document.createElement("a");
-      link.href = canvas.toDataURL("image/webp");
-      try {
-        const pictureDistributionTransform = transformBase64ToFile(link.href, id + "_distribution");
-        await setAdminNewProduct({
-          ...adminNewProduct,
-          id: idProduct,
-          image: await postInStorageProductsImages(pictureDistributionTransform, idProduct),
-        });
-
-        console.log("Your order has been added to the cart");
-      } catch (error) {
-        console.log(error);
-      }
-    });
+    if (adminOpen && adminNewProduct.name !== "" && adminNewProduct.description !== "" && adminNewProduct.price !== "") {
+      html2canvas(containerImgsRef.current, {
+        scale: 1,
+        willReadFrequently: true,
+      }).then(async (canvas) => {
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/webp");
+        try {
+          const pictureDistributionTransform = transformBase64ToFile(link.href, id + "_distribution");
+          await setAdminNewProduct({
+            ...adminNewProduct,
+            id: idProduct,
+            image: await postInStorageProductsImages(pictureDistributionTransform, idProduct),
+          });
+          console.log("Your order has been added to the cart");
+        } catch (error) {
+          console.log(error);
+        }
+      });
+    } else {
+      alert("Please fill all the fields");
+    }
   };
 
   useEffect(() => {
-    if (adminNewProduct.length > 0) {
+    if (adminOpen && adminNewProduct?.image !== "") {
       setTimeout(() => {
         handleAdminAddProduct();
       }, 1000);
@@ -353,6 +356,7 @@ export const CreatePictureView = ({
 
   const handleAdminAddProduct = async () => {
     if (
+      adminOpen &&
       adminNewProduct.id !== "" &&
       adminNewProduct.name !== "" &&
       adminNewProduct.description !== "" &&
@@ -367,6 +371,10 @@ export const CreatePictureView = ({
         description: "",
         price: "",
         image: "",
+      });
+      setImages({
+        ...images,
+        imageUploaded: homeFrameFull,
       });
     } else {
       alert("Please fill all the fields");

@@ -263,31 +263,29 @@
   width: 80vw;
 }
 
+.products-openProduct-textContainer {
+  background-color: rgb(214, 201, 169);
+  color: var(--black-color);
+  margin-bottom: 24px;
+  padding: 4px 8px;
+}
+
 .products-openProduct-name {
-  color: var(--color-1);
   font-size: 24px;
   font-weight: 700;
   margin: 0 0 12px 0;
-  text-shadow: -1px 1px 0 var(--black-color), 1px 1px 0 var(--black-color), 1px -1px 0 var(--black-color),
-    -1px -1px 0 var(--black-color);
 }
 
 .products-openProduct-price {
-  color: var(--color-1);
   font-size: 20px;
   font-weight: 400;
   margin: 0 0 12px 0;
-  text-shadow: -1px 1px 0 var(--black-color), 1px 1px 0 var(--black-color), 1px -1px 0 var(--black-color),
-    -1px -1px 0 var(--black-color);
 }
 
 .products-openProduct-description {
-  color: var(--color-1);
   font-size: 16px;
   font-weight: 400;
   margin: 0 0 12px 0;
-  text-shadow: -1px 1px 0 var(--black-color), 1px 1px 0 var(--black-color), 1px -1px 0 var(--black-color),
-    -1px -1px 0 var(--black-color);
 }
 
 .products-openProduct-btn {
@@ -514,48 +512,48 @@
     top: 0;
     width: 100%;
   }
-  
+
   .products-openProduct-items {
     border-radius: 0;
     padding: 4px;
     width: 100%;
     z-index: 100;
   }
-  
+
   .products-openProduct-close {
     background-color: rgb(0, 0, 0);
     font-size: 16px;
     padding: 4px 8px;
   }
-  
+
   .products-openProduct-img {
     background-color: var(--color-6);
     border-radius: 0;
-    height: calc(56.25vw - 14.625px);
-    margin: 0 0 8px 0;
+    height: calc(56.25vw - 4.5px);
+    margin: 0 auto 8px auto;
     max-height: 486px;
     max-width: 865px;
     min-height: 144px;
     min-width: 256px;
-    width: calc(100vw - 26px);
+    width: calc(100vw - 8px);
   }
-  
+
+  .products-openProduct-textContainer {
+    margin: 0 0 8px 0;
+  }
+
   .products-openProduct-name {
     font-size: 16px;
-    font-weight: 700;
   }
-  
+
   .products-openProduct-price {
     font-size: 12px;
-    font-weight: 400;
   }
-  
+
   .products-openProduct-description {
-    color: var(--color-1);
     font-size: 12px;
-    font-weight: 400;
   }
-  
+
   .products-openProduct-btn {
     border-radius: 0;
     color: var(--color-6);

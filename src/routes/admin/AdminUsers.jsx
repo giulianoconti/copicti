@@ -64,19 +64,21 @@ export const AdminUsers = () => {
               )}
               {order.heightReference && (
                 <p className="adminUsers-user-text">
-                  <strong>heightReference: $</strong>
-                  {order.heightReference}
+                  <strong>heightReference: </strong>
+                  {order.heightReference}%
                 </p>
               )}
               {order.widthReference && (
                 <p className="adminUsers-user-text">
-                  <strong>Price: $</strong>
-                  {order.widthReference}
+                  <strong>widthReference: </strong>
+                  {order.widthReference}%
                 </p>
               )}
-              {order.pictureDistribution && <img className="adminUsers-user-img" src={order.pictureDistribution} />}
-              {order.uploadedImage && <img className="adminUsers-user-img" src={order.uploadedImage} />}
-              {order.image && <img className="adminUsers-user-img" src={order.image} />}
+              <div className="adminUsers-user-img-container">
+                {order.pictureDistribution && <img className="adminUsers-user-img" src={order.pictureDistribution} />}
+                {order.uploadedImage && <img className="adminUsers-user-img" src={order.uploadedImage} />}
+                {order.image && <img className="adminUsers-user-img" src={order.image} />}
+              </div>
             </div>
           ))}
         </div>
