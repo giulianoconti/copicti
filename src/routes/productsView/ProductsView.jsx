@@ -171,7 +171,7 @@ export const ProductsView = () => {
             <IsLoading />
           ) : (
             products.map((product, i) => {
-              if (!(i > page * 20 - 21 && i < page * 20 - 1)) return;
+              if (!(i > page * 20 - 21 && i < page * 20)) return;
               return (
                 <div className="products-item" onClick={() => setOpenProduct(product)} key={product.id}>
                   <img className="products-item-img" src={product.image} alt={"product " + product.id} />
@@ -207,45 +207,55 @@ export const ProductsView = () => {
               </div>
             </div>
           )}
-
-          <div className="products-page-container">
-            {page > 1 && (
+          {products.length > 20 && (
+            <div className="products-page-container">
               <button
-                className={`products-page-btn products-page-btn-arrows products-page-btn_-${page > 2 ? "3" : "2_5"}`}
+                className="products-page-btn"
+                disabled={page > 1 ? false : true}
                 onClick={() => handlePage(page - 1)}
               >
                 <img className="products-page-btn-img" src={arrowLeft} alt="left arrow" />
               </button>
-            )}
-            {page > 2 && (
-              <button className="products-page-btn products-page-btn_-2" onClick={() => handlePage(page - 2)}>
+              <button
+                className="products-page-btn"
+                disabled={page > 2 ? false : true}
+                onClick={() => handlePage(page - 2)}
+              >
                 {page - 2}
               </button>
-            )}
-            {page > 1 && (
-              <button className="products-page-btn products-page-btn_-1" onClick={() => handlePage(page - 1)}>
+              <button
+                className="products-page-btn"
+                disabled={page > 1 ? false : true}
+                onClick={() => handlePage(page - 1)}
+              >
                 {page - 1}
               </button>
-            )}
-            <button className="products-page-btn products-page-btn-active" onClick={() => handlePage(page)}>
-              {page}
-            </button>
-
-            <button className="products-page-btn products-page-btn_1" onClick={() => handlePage(page + 1)}>
-              {page + 1}
-            </button>
-
-            <button className="products-page-btn products-page-btn_2" onClick={() => handlePage(page + 2)}>
-              {page + 2}
-            </button>
-
-            <button
-              className="products-page-btn products-page-btn-arrows products-page-btn_3"
-              onClick={() => handlePage(page + 1)}
-            >
-              <img className="products-page-btn-img" src={arrowRight} alt="right arrow" />
-            </button>
-          </div>
+              <button className="products-page-btn products-page-btn-active" onClick={() => handlePage(page)}>
+                {page}
+              </button>
+              <button
+                className="products-page-btn"
+                disabled={page * 20 < products.length ? false : true}
+                onClick={() => handlePage(page + 1)}
+              >
+                {page + 1}
+              </button>
+              <button
+                className="products-page-btn"
+                disabled={(page + 1) * 20 < products.length ? false : true}
+                onClick={() => handlePage(page + 2)}
+              >
+                {page + 2}
+              </button>
+              <button
+                className="products-page-btn"
+                disabled={page * 20 < products.length ? false : true}
+                onClick={() => handlePage(page + 1)}
+              >
+                <img className="products-page-btn-img" src={arrowRight} alt="right arrow" />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

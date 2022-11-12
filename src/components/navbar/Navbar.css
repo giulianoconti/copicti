@@ -61,11 +61,6 @@
   transition: all 0.3s ease;
 }
 
-.navbar__menu-link:hover {
-  background-color: var(--color-4);
-  color: var(--white-color);
-}
-
 .navbar__icons {
   align-items: center;
   display: flex;
@@ -85,18 +80,6 @@
   padding: 0 16px;
   transition: all 0.3s ease;
   width: 50%;
-}
-
-.navbar__icon:hover {
-  background-color: var(--color-4);
-}
-
-.navbar__icon:hover .fas {
-  fill: var(--white-color);
-}
-
-.navbar__icon:hover .navbar__username {
-  color: var(--white-color);
 }
 
 .navbar__username {
@@ -173,14 +156,6 @@
     width: 40px;
   }
 
-  .navbar__menu-icon:active {
-    background-color: var(--color-4);
-  }
-
-  .navbar__menu-icon:active .fas {
-    fill: var(--white-color);
-  }
-
   .navbar__menu-mobile {
     background-color: #fff;
     display: block;
@@ -235,6 +210,25 @@
 
   .active {
     background-color: var(--color-4);
+    color: var(--white-color);
+  }
+}
+
+@media (pointer: fine) {
+  .navbar__menu-link:hover {
+    background-color: var(--color-4);
+    color: var(--white-color);
+  }
+
+  .navbar__icon:hover {
+    background-color: var(--color-4);
+  }
+
+  .navbar__icon:hover .fas {
+    fill: var(--white-color);
+  }
+
+  .navbar__icon:hover .navbar__username {
     color: var(--white-color);
   }
 }

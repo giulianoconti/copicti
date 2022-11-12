@@ -44,7 +44,7 @@
   margin: 10px auto;
   text-align: center;
   text-shadow: -1px 1px 0 var(--color-6), 1px 1px 0 var(--color-6), 1px -1px 0 var(--color-6),
-  -1px -1px 0 var(--color-6);
+    -1px -1px 0 var(--color-6);
 }
 
 .login-btn {
@@ -64,10 +64,6 @@
   width: 100%;
 }
 
-.login-btn:hover {
-  background-color: var(--color-4);
-}
-
 .login-alert-text {
   color: var(--color-1);
   font-size: 16px;
@@ -75,7 +71,7 @@
   margin: 10px auto;
   text-align: center;
   text-shadow: -1px 1px 0 var(--color-6), 1px 1px 0 var(--color-6), 1px -1px 0 var(--color-6),
-  -1px -1px 0 var(--color-6);
+    -1px -1px 0 var(--color-6);
 }
 
 .login-btn-google {
@@ -94,10 +90,6 @@
   padding: 4px 12px 4px 4px;
   transition: all 0.3s ease;
   width: 100%;
-}
-
-.login-btn-google:hover {
-  background-color: rgb(66, 133, 244);
 }
 
 .login-btn-icon {
@@ -136,5 +128,15 @@
 
   .login-btn-icon {
     border-radius: 0;
+  }
+}
+
+@media (pointer: fine) {
+  .login-btn:hover {
+    background-color: var(--color-4);
+  }
+
+  .login-btn-google:hover {
+    background-color: rgb(66, 133, 244);
   }
 }
