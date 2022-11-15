@@ -22,9 +22,9 @@ export const ProductsView = () => {
     image: "",
   });
 
-  useEffect(() => {
+ /*  useEffect(() => {
     getProductsFromFirebase();
-  }, []);
+  }, []); */
 
   useEffect(() => {
     setIsLoadingItems(true);
@@ -32,6 +32,7 @@ export const ProductsView = () => {
   }, [products_id]);
 
   const getProductsFromFirebase = async () => {
+    setPage(1);
     const productsFromFirebase = await getProducts(products_id);
     setProducts(productsFromFirebase);
     setIsLoadingPage(false);
