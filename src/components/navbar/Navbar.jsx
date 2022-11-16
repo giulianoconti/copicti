@@ -28,7 +28,7 @@ export const Navbar = () => {
       <div className="navbar__container">
         <Link to="/" className="navbar__logo">
           <img className="navbar__logo-img" src={logo} alt="logo" />
-          COPICTI
+          <h2 className="navbar__logo-text">COPICTI</h2>
         </Link>
         <div className="navbar__menu">
           <ul className="navbar__menu-list">

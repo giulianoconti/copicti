@@ -40,6 +40,13 @@
   width: 40px;
 }
 
+.navbar__logo-text {
+  color: var(--color-6);
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
 .navbar__menu-list {
   align-items: center;
   display: flex;
@@ -47,7 +54,7 @@
 }
 
 .navbar__menu-item {
-  margin: 0 0.5rem;
+  margin: 0 4px;
 }
 
 .navbar__menu-link {
@@ -73,10 +80,10 @@
   background-color: var(--color-6);
   border-radius: 16px;
   display: flex;
-  font-size: 1.5rem;
+  font-size: 24px;
   height: 32px;
   justify-content: center;
-  margin: 0 8px;
+  margin: 0 4px;
   padding: 0 16px;
   transition: all 0.3s ease;
   width: 50%;
@@ -142,6 +149,10 @@
 
   .navbar__logo-img {
     margin: 0 2px 0 8px;
+  }
+
+  .navbar__logo-text {
+    display: none;
   }
 
   .navbar__menu-icon {

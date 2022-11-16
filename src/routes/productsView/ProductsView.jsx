@@ -56,7 +56,7 @@ export const ProductsView = () => {
   };
 
   const handlePage = (pageNumber) => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo(0, 0);
     setPage(pageNumber);
   };
 
@@ -191,7 +191,7 @@ export const ProductsView = () => {
               }
             >
               <div className="products-openProduct-items">
-                <button className="products-openProduct-close">x</button>
+               {/*  <button className="products-openProduct-close">x</button> */}
                 <img className="products-openProduct-img" src={openProduct.image} alt={"product " + openProduct.id} />
                 <div className="products-openProduct-textContainer">
                   <h3 className="products-openProduct-name">{openProduct.name}</h3>
