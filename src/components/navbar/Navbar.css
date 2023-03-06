@@ -194,7 +194,7 @@
   }
 
   .navbar__menu-item-myname {
-    bottom: 32px;
+    bottom: 64px;
     color: var(--color-6);
     font-size: 12px;
     font-weight: 500;
