@@ -39,4 +39,27 @@ html {
   border-radius: 8px;
 }
 
+.made_by {
+  display: block;
+  bottom: 16px;
+  color: var(--color-6);
+  font-size: 12px;
+  font-weight: 500;
+  position: fixed;
+  right: 16px;
+  z-index: 100;
+}
 
+.made_by_me {
+  bottom: 16px;
+  color: var(--color-6);
+  font-size: 12px;
+  font-weight: 700;
+  margin-left: 4px;
+}
+
+@media screen and (max-width: 768px) {
+  .made_by {
+    display: none;
+  }
+}

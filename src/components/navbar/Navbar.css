@@ -193,6 +193,25 @@
     width: 100%;
   }
 
+  .navbar__menu-item-myname {
+    bottom: 32px;
+    color: var(--color-6);
+    font-size: 12px;
+    font-weight: 500;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+  }
+
+  .navbar__menu-link-myname {
+    background-color: transparent;
+    color: var(--color-6);
+    font-size: 12px;
+    font-weight: 700;
+    margin-left: 4px;
+    text-decoration: none;
+  }
+
   .navbar__menu-link {
     align-items: center;
     background-color: transparent;

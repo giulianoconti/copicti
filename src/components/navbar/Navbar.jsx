@@ -101,6 +101,12 @@ export const Navbar = () => {
               Contact
             </NavLink>
           </li>
+          <li className="navbar__menu-item-myname">
+            Made by:
+            <a className="navbar__menu-link-myname" target="_blank" href="https://www.linkedin.com/in/giulianoconti/" rel="noreferrer">
+              Giuliano Conti
+            </a>
+          </li>
         </ul>
       </div>
     </nav>

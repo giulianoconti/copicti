@@ -11,14 +11,20 @@ import { LoginView } from "./routes/loginView/LoginView";
 import { AuthProvider } from "./context/authContext";
 import { AdminProducts } from "./routes/admin/AdminProducts";
 import { AccessIfLogged } from "./components/protectedRoutes/AccessIfLogged";
-import "./index.css";
 import { AccessIfYouAreAdmin } from "./components/protectedRoutes/AccessIfYouAreAdmin";
 import { AdminUsers } from "./routes/admin/AdminUsers";
+import "./index.css";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
     <AuthProvider>
       <Navbar />
+      <p className="made_by">
+        Made by:
+        <a className="made_by_me" target="_blank" href="https://www.linkedin.com/in/giulianoconti/" rel="noreferrer">
+          Giuliano Conti
+        </a>
+      </p>
       <Routes>
         <Route path="/" element={<HomeView />} />
         <Route path="/login" element={<LoginView />} />
@@ -46,7 +52,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             </AccessIfLogged>
           }
         />
-         <Route
+        <Route
           path="/admin/products/:distributionId"
           element={
             <AccessIfLogged>
@@ -56,7 +62,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             </AccessIfLogged>
           }
         />
-         <Route
+        <Route
           path="/admin/products/:distributionId/:sizeId"
           element={
             <AccessIfLogged>
@@ -66,7 +72,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
             </AccessIfLogged>
           }
         />
-         <Route
+        <Route
           path="/admin/users"
           element={
             <AccessIfLogged>
