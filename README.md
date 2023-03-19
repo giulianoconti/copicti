@@ -1,10 +1,15 @@
 <a href="https://www.linkedin.com/in/giulianoconti/" target="_blank">
-<img style="width:100px;" src="https://assets.stickpng.com/images/580b57fcd9996e24bc43c528.png" alt="LinkedIn image" title="LinkedIn">
+<img style="width:100px;" src="https://www.svgrepo.com/show/303172/linkedin-logo.svg" alt="LinkedIn image" title="LinkedIn">
+</a>
+<a href="https://github.com/giulianoconti" target="_blank">
+<img style="width:100px;" src="https://www.svgrepo.com/show/372862/github-full.svg" alt="GitHub image" title="GitHub">
 </a>
 <a href="https://www.instagram.com/giulianocontii/" target="_blank">
 <img style="width:100px;" src="https://cdn-icons-png.flaticon.com/128/2111/2111463.png" alt="Instagram image" title="Instagram">
 </a>
-
+<a href="mailto:giuliconti1@gmail.com" target="_blank">
+<img style="width:100px;" src="https://cdn.cdnlogo.com/logos/g/56/gmail.png" alt="Mail image" title="Mail">
+</a>
 
 ## About The Project
 
