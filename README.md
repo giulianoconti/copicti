@@ -14,3 +14,4 @@ COPICTI is a web page where you can add prefabricated paintings to your cart or 
 ### Built With
 
 * [React](https://reactjs.org/)
+* [Firebase](https://firebase.google.com/)
