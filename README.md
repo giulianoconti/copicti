@@ -5,7 +5,7 @@
 <img style="border-radius: 10px;" src="https://raw.githubusercontent.com/giulianoconti/api/main/svgs/github.svg" alt="GitHub image" title="GitHub">
 </a>
 <a href="https://www.instagram.com/giulianocontii/" target="_blank">
-<img src="https://www.svgrepo.com/show/303140/instagram-logo.svg" alt="Instagram image" title="Instagram">
+<img src="https://raw.githubusercontent.com/giulianoconti/api/main/svgs/instagram.svg" alt="Instagram image" title="Instagram">
 </a>
 <a href="mailto:giuliconti1@gmail.com" target="_blank">
 <img src="https://cdn.cdnlogo.com/logos/g/56/gmail.png" alt="Mail image" title="Mail">
