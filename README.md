@@ -1,7 +1,12 @@
 <a href="https://www.linkedin.com/in/giulianoconti/" target="_blank">
 <img src="https://www.svgrepo.com/show/303172/linkedin-logo.svg" alt="LinkedIn image" title="LinkedIn">
 </a>
-<a href="https://github.com/giulianoconti" target="_blank">
+<a href="https://github.com/giulianoconti" target="_blank" style="background-color: rgb(150,150,150);
+  border-radius: 10px;
+  height: 50px;
+  object-fit: cover;
+  padding: 0 10px;
+  width: 100px;">
 <img style="background-color: rgb(150,150,150);
   border-radius: 10px;
   height: 50px;
