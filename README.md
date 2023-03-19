@@ -2,7 +2,12 @@
 <img src="https://www.svgrepo.com/show/303172/linkedin-logo.svg" alt="LinkedIn image" title="LinkedIn">
 </a>
 <a href="https://github.com/giulianoconti" target="_blank">
-<img src="https://raw.githubusercontent.com/giulianoconti/api/main/svgs/github.svg" alt="GitHub image" title="GitHub">
+<img style="background-color: rgb(150,150,150);
+  border-radius: 10px;
+  height: 50px;
+  object-fit: cover;
+  padding: 0 10px;
+  width: 100px;" src="https://raw.githubusercontent.com/giulianoconti/api/main/svgs/github.svg" alt="GitHub image" title="GitHub">
 </a>
 <a href="https://www.instagram.com/giulianocontii/" target="_blank">
 <img src="https://www.svgrepo.com/show/303140/instagram-logo.svg" alt="Instagram image" title="Instagram">
