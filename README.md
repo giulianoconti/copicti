@@ -4,7 +4,7 @@
 
 ## About The Project
 
-![COPICTI]([https://raw.githubusercontent.com/giulianoconti/api/main/imagesProjects/images_956x538/copicti_956x538.webp])
+![COPICTI][https://raw.githubusercontent.com/giulianoconti/api/main/imagesProjects/images_956x538/copicti_956x538.webp]
 
 
 Page where you can add to the cart prefabricated paintings or designed by your own account.
