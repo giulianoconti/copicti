@@ -2,7 +2,7 @@
 <img style="width:100px; background-color:rgb(100,100,100);" src="https://www.svgrepo.com/show/303172/linkedin-logo.svg" alt="LinkedIn image" title="LinkedIn">
 </a>
 <a href="https://github.com/giulianoconti" target="_blank">
-<img style="width:100px; background-color:rgb(255,255,255);" src="https://www.svgrepo.com/show/372862/github-full.svg" alt="GitHub image" title="GitHub">
+<img style="width:100px; background:rgb(255,255,255);" src="https://www.svgrepo.com/show/372862/github-full.svg" alt="GitHub image" title="GitHub">
 </a>
 <a href="https://www.instagram.com/giulianocontii/" target="_blank">
 <img style="width:100px; background-color:rgb(100,100,100);" src="https://www.svgrepo.com/show/303140/instagram-logo.svg" alt="Instagram image" title="Instagram">
