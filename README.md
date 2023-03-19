@@ -8,7 +8,7 @@
 <img src="https://raw.githubusercontent.com/giulianoconti/api/main/svgs/instagram.svg" alt="Instagram image" title="Instagram">
 </a>
 <a href="mailto:giuliconti1@gmail.com" target="_blank">
-<img src="https://cdn.cdnlogo.com/logos/g/56/gmail.png" alt="Mail image" title="Mail">
+<img src="https://raw.githubusercontent.com/giulianoconti/api/main/svgs/gmail.png" alt="Mail image" title="Mail">
 </a>
 
 ## About The Project
