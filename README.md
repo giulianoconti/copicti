@@ -1,6 +1,10 @@
 <a href="https://www.linkedin.com/in/giulianoconti/" target="_blank">
-<img src="https://assets.stickpng.com/images/580b57fcd9996e24bc43c528.png" alt="LinkedIn" title="LinkedIn">
+<img style="width:100px;" src="https://assets.stickpng.com/images/580b57fcd9996e24bc43c528.png" alt="LinkedIn image" title="LinkedIn">
 </a>
+<a href="https://www.instagram.com/giulianocontii/" target="_blank">
+<img style="width:100px;" src="https://cdn-icons-png.flaticon.com/128/2111/2111463.png" alt="Instagram image" title="Instagram">
+</a>
+
 
 ## About The Project
 
