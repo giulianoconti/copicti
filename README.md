@@ -1,5 +1,5 @@
 <a href="https://www.linkedin.com/in/giulianoconti/" target="_blank">
-<img src="https://www.svgrepo.com/show/303172/linkedin-logo.svg" alt="LinkedIn image" title="LinkedIn">
+<img src="https://raw.githubusercontent.com/giulianoconti/api/main/svgs/linkedin.svg" alt="LinkedIn image" title="LinkedIn">
 </a>
 <a href="https://github.com/giulianoconti" target="_blank"> 
 <img style="border-radius: 10px;" src="https://raw.githubusercontent.com/giulianoconti/api/main/svgs/github.svg" alt="GitHub image" title="GitHub">
