@@ -1,10 +1,11 @@
-[![LinkedIn][[linkedin-shield]https://camo.githubusercontent.com/1ffde4ea8d2869a62cdf80282516c524e1109befc83d6339aae7a55d94ff4ae5/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f2d4c696e6b6564496e2d626c61636b2e7376673f7374796c653d666f722d7468652d6261646765266c6f676f3d6c696e6b6564696e26636f6c6f72423d353535]][https://www.linkedin.com/in/giulianoconti/]
+![https://camo.githubusercontent.com/1ffde4ea8d2869a62cdf80282516c524e1109befc83d6339aae7a55d94ff4ae5/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f2d4c696e6b6564496e2d626c61636b2e7376673f7374796c653d666f722d7468652d6261646765266c6f676f3d6c696e6b6564696e26636f6c6f72423d353535]][https://www.linkedin.com/in/giulianoconti/]
 
 
 
 ## About The Project
 
-https://raw.githubusercontent.com/giulianoconti/api/main/imagesProjects/images_956x538/copicti_956x538.webp
+![COPICTI]([http://url/to/img.png](https://raw.githubusercontent.com/giulianoconti/api/main/imagesProjects/images_956x538/copicti_956x538.webp))
+
 
 Page where you can add to the cart prefabricated paintings or designed by your own account.
 
