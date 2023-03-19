@@ -1,5 +1,5 @@
 <a href="https://www.linkedin.com/in/giulianoconti/" target="_blank">
-<img src="https://camo.githubusercontent.com/1ffde4ea8d2869a62cdf80282516c524e1109befc83d6339aae7a55d94ff4ae5/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f2d4c696e6b6564496e2d626c61636b2e7376673f7374796c653d666f722d7468652d6261646765266c6f676f3d6c696e6b6564696e26636f6c6f72423d353535" alt="LinkedIn" title="LinkedIn">
+<img src="https://assets.stickpng.com/images/580b57fcd9996e24bc43c528.png" alt="LinkedIn" title="LinkedIn">
 </a>
 
 ## About The Project
