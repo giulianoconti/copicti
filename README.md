@@ -7,7 +7,7 @@
 
 ## COPICTI
 
-![COPICTI](https://raw.githubusercontent.com/giulianoconti/api/main/imagesProjects/images_956x538/copicti_956x538.webp?raw=true)
+![COPICTI](https://raw.githubusercontent.com/giulianoconti/api/main/imagesProjects/images_956x538/copicti.webp?raw=true)
 
 COPICTI is a web page where you can add prefabricated paintings to your cart or design your own paintings.
 
