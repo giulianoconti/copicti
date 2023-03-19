@@ -1,17 +1,17 @@
-<div style="display:flex; justify-content: center; width: 100%">
-<a href="https://www.linkedin.com/in/giulianoconti/">
-<img style="width: 100px;" src="https://raw.githubusercontent.com/giulianoconti/api/main/svgs/linkedin.svg" alt="LinkedIn image" title="LinkedIn">
-</a>
-<a href="https://github.com/giulianoconti"> 
-<img style="width: 100px;" src="https://raw.githubusercontent.com/giulianoconti/api/main/svgs/github.svg" alt="GitHub image" title="GitHub">
-</a>
-<a href="https://www.instagram.com/giulianocontii/">
-<img style="width: 100px;" src="https://raw.githubusercontent.com/giulianoconti/api/main/svgs/instagram.svg" alt="Instagram image" title="Instagram">
-</a>
-<a href="mailto:giuliconti1@gmail.com">
-<img style="width: 100px;" src="https://raw.githubusercontent.com/giulianoconti/api/main/svgs/gmail.png" alt="Mail image" title="Mail">
-</a>
-</div>
+<p align="center">
+  <a href="https://www.linkedin.com/in/giulianoconti/">
+    <img width="100" src="https://raw.githubusercontent.com/giulianoconti/api/main/svgs/linkedin.svg" alt="LinkedIn image" title="LinkedIn">
+  </a>
+  <a href="https://github.com/giulianoconti"> 
+    <img width="100" src="https://raw.githubusercontent.com/giulianoconti/api/main/svgs/github.svg" alt="GitHub image" title="GitHub">
+  </a>
+  <a href="https://www.instagram.com/giulianocontii/">
+    <img width="100" src="https://raw.githubusercontent.com/giulianoconti/api/main/svgs/instagram.svg" alt="Instagram image" title="Instagram">
+  </a>
+  <a href="mailto:giuliconti1@gmail.com">
+    <img width="100" src="https://raw.githubusercontent.com/giulianoconti/api/main/svgs/gmail.png" alt="Mail image" title="Mail">
+  </a>
+</p>
 
 ## About The Project
 
