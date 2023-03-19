@@ -6,7 +6,7 @@
   height: 50px;
   object-fit: cover;
   padding: 0 10px;
-  width: 100px;">
+  width: 100px;"> 
 <img style="background-color: rgb(150,150,150);
   border-radius: 10px;
   height: 50px;
