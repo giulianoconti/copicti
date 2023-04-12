@@ -6,6 +6,7 @@
   justify-content: center;
   margin-top: 64px;
   min-height: 100vh;
+  min-height: 100svh;
 }
 
 .adminProducts-header {
@@ -151,6 +152,7 @@
     background-position: center;
     background-size: contain;
     height: 100vh;
+    height: 100svh;
     left: 0;
     position: fixed;
     top: 0;
