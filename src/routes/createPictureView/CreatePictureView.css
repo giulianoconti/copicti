@@ -309,8 +309,9 @@
 }
 
 .createPicture-image-frame {
+  position: absolute;
+  top: 0;
   width: 100%;
-  z-index: 5;
 }
 
 .createPicture-image-frame-plant {
