@@ -1,9 +1,8 @@
-/* global process */
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 
-mongoose.connect(process.env.MONGODB_URL, {
+mongoose.connect(import.meta.env.VITE_MONGODB_URL, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
