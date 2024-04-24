@@ -1,0 +1,106 @@
+.login {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: calc(100vh - 256px);
+  min-height: calc(100svh - 256px);
+}
+
+.login-container {
+  align-items: center;
+  background-color: var(--black-color-05);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 72px 0 8px 0;
+  max-width: 400px;
+  min-height: 360px;
+  min-width: 360px;
+  padding: 20px;
+  width: 100%;
+}
+
+.login-user-img {
+  border-radius: 6px;
+  height: 100px;
+  margin: 0 auto;
+  width: 100px;
+}
+
+.login-user-name {
+  font-size: 24px;
+  font-weight: 400;
+  margin: 10px auto;
+  text-align: center;
+}
+
+.login-user-email {
+  font-size: 16px;
+  font-weight: 200;
+  margin: 10px auto;
+  text-align: center;
+}
+
+.login-btn {
+  align-items: center;
+  background-color: var(--primary-red-80);
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  font-size: 1rem;
+  font-weight: 200;
+  justify-content: center;
+  margin: 10px auto;
+  padding: 8px 16px;
+  transition: background-color 0.3s ease;
+  width: 100%;
+}
+
+.login-alert-text {
+  font-size: 16px;
+  font-weight: 200;
+  margin: 10px auto;
+  max-width: 256px;
+  text-align: center;
+  text-wrap: balance;
+}
+
+.login-btn-google {
+  align-items: center;
+  background-color: rgb(50, 110, 200);
+  border-radius: 6px;
+  border: none;
+  color: var(--white-color-100);
+  cursor: pointer;
+  display: flex;
+  font-size: 16px;
+  font-weight: 400;
+  justify-content: center;
+  margin: 10px auto;
+  max-width: 200px;
+  padding: 4px 12px 4px 4px;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.login-btn-icon {
+  background-color: rgb(255, 255, 255);
+  border-radius: 6px;
+  padding: 6px;
+  height: 32px;
+  margin-right: auto;
+  width: 32px;
+}
+
+@media (pointer: fine) {
+  .login-btn:hover {
+    background-color: var(--primary-red-100);
+  }
+
+  .login-btn-google:hover {
+    background-color: rgb(66, 133, 244);
+  }
+}

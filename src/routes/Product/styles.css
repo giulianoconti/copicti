@@ -1,0 +1,129 @@
+.product {
+  align-items: center;
+  background-color: var(--white-color-100);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+
+.product-title {
+  border-bottom: 1px solid var(--neutral-gray5-100);
+  color: var(--neutral-gray5-100);
+  font-size: 48px;
+  font-weight: 400;
+  margin: 64px 0;
+}
+
+.product-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin: 0 auto;
+  max-width: 1200px;
+  margin: 0 16px 64px 16px;
+  width: 100%;
+}
+
+.product-container > div {
+  background-color: var(--black-color-10);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 48px;
+  max-width: 800px;
+  padding: 32px;
+}
+
+.product-container-btn {
+  background-color: var(--neutral-gray4-100);
+  border-radius: 4px;
+  border: none;
+  color: var(--white-color-100);
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 400;
+  margin-left: auto;
+  padding: 8px 16px;
+  width: 180px;
+}
+
+.product-container-btn > .loader-dots:after {
+  animation: dots 1s steps(5, end) infinite;
+  content: "";
+  position: absolute;
+}
+
+@keyframes dots {
+  0% {
+    content: ".";
+  }
+  33% {
+    content: "..";
+  }
+  66% {
+    content: "...";
+  }
+}
+
+.product-container-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.product-container-btn:not(:disabled):hover {
+  background-color: var(--neutral-gray5-100);
+}
+
+.product-container-info {
+  align-items: start;
+  display: flex;
+  gap: 16px;
+}
+
+.product-container-info-img {
+  aspect-ratio: 5 / 4;
+  margin: 0 auto;
+  object-fit: contain;
+  width: 100%;
+}
+
+.product-container-info > div {
+  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.product-container-info-name {
+  color: var(--neutral-gray5-100);
+  font-size: 24px;
+  font-weight: 400;
+  margin-bottom: 16px;
+}
+
+.product-container-info-description {
+  color: var(--neutral-gray5-100);
+  font-size: 16px;
+  font-weight: 300;
+  margin-bottom: 16px;
+  text-wrap: pretty;
+}
+
+.product-container-info-price {
+  color: var(--neutral-gray5-100);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+@media (min-width: 768px) {
+  .product-container-info > div {
+    flex-direction: row;
+  }
+
+  .product-container-info-img {
+    max-width: 400px;
+    width: 50%;
+  }
+}

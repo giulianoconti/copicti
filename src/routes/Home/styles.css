@@ -1,0 +1,212 @@
+.home {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100svh;
+  width: 100%;
+}
+
+@keyframes carousel {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-200%);
+  }
+}
+
+.home-container {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+  margin: 0 auto;
+  max-width: 1200px;
+  padding: 64px 32px 32px 32px;
+  width: 100%;
+}
+
+.home-container-delivery {
+  color: var(--neutral-gray5-100);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 85%;
+}
+
+.home-container-delivery-item {
+  align-items: center;
+  border: 1px solid var(--neutral-gray5-100);
+  display: flex;
+  gap: 8px;
+  padding: 16px 24px 8px 24px;
+  width: 100%;
+}
+
+.home-container-delivery-item > img {
+  aspect-ratio: 1 / 1;
+}
+
+.home-container-delivery-item > p {
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.home-container-popular {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 100%;
+}
+
+.home-container-popular > h2 {
+  border-bottom: 1px solid var(--neutral-gray1-100);
+  font-size: 22.5px;
+  font-weight: 400;
+  padding-bottom: 8px;
+  text-align: center;
+  width: 100%;
+}
+
+.home-container-popular-item {
+  align-items: center;
+  color: var(--black-color-100);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.home-container-popular-item:hover > img {
+  transform: translateY(-8px);
+}
+
+.home-container-popular-item:hover > h3 {
+  text-decoration: underline;
+}
+
+.home-container-popular-item > img {
+  aspect-ratio: 16 / 9;
+  transition: transform 0.3s ease;
+  width: 100%;
+}
+
+.home-container-popular-item > h3 {
+  font-size: 22px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.home-container-best-sellers {
+  align-items: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 48px 24px;
+  width: 100%;
+}
+
+.home-container-best-sellers > h2 {
+  border-bottom: 1px solid var(--neutral-gray1-100);
+  font-size: 22.5px;
+  font-weight: 400;
+  grid-column: span 2;
+  padding-bottom: 8px;
+  text-align: center;
+}
+
+.home-container-best-sellers-item {
+  color: var(--black-color-100);
+  align-items: flex-start;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: 100%;
+}
+
+.home-container-best-sellers-item:hover > .home-container-best-sellers-item-img > img {
+  scale: 1.1;
+}
+
+.home-container-best-sellers-item-img {
+  aspect-ratio: 1 / 1;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.home-container-best-sellers-item-img > img {
+  height: 100%;
+  object-fit: cover;
+  transition: scale 0.3s ease;
+  width: 100%;
+}
+
+.home-container-best-sellers-item-container {
+  align-items: flex-start;
+  background-color: var(--black-color-05);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 8px 8px 16px 8px;
+  width: 100%;
+  z-index: 1;
+}
+
+.home-container-best-sellers-item-container > h3 {
+  font-size: 13px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.home-container-best-sellers-item-container > h4 {
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+}
+
+@media screen and (min-width: 768px) {
+  .home-container-popular {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .home-container-popular > h2 {
+    grid-column: span 3;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .home-container-delivery {
+    flex-direction: row;
+  }
+
+  .home-container-delivery-item {
+    padding: 16px 24px;
+  }
+
+  .home-container-best-sellers {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  }
+
+  .home-container-best-sellers > h2 {
+    grid-column: span 6;
+  }
+
+  .home-container-best-sellers > a {
+    grid-column: span 2;
+    max-width: 363px;
+  }
+
+  .home-container-best-sellers > a:last-of-type {
+    grid-column: span 3;
+    margin-right: auto;
+  }
+
+  .home-container-best-sellers > a:nth-last-of-type(2) {
+    grid-column: span 3;
+    margin-left: auto;
+  }
+}

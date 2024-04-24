@@ -1,0 +1,114 @@
+.cart {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+
+.cart-container {
+  background-color: var(--black-color-05);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin: 64px 24px 24px 24px;
+  max-width: 1136px;
+  min-height: 60vh;
+  padding: 32px;
+  width: 100%;
+}
+
+.cart-title {
+  font-size: 32px;
+  font-weight: 400;
+}
+
+.cart-items-container {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.cart-item {
+  align-items: center;
+  background-color: var(--white-color-100);
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  height: 256px;
+  justify-content: space-between;
+  width: 256px;
+}
+
+.cart-item-img {
+  aspect-ratio: 16/9;
+  border-radius: 6px 6px 0 0;
+  height: 144px;
+  width: 256px;
+}
+
+.cart-item-info {
+  color: var(--color-1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+  margin: 0 10px;
+  padding: 8px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.cart-item-name {
+  font-size: 20px;
+  font-weight: 300;
+  margin: 0 0 8px 0;
+  overflow: hidden;
+}
+
+.cart-item-text {
+  font-size: 12px;
+  font-weight: 200;
+  margin: 0;
+}
+
+.cart-item-btn {
+  align-items: center;
+  background-color: rgb(200, 50, 50);
+  border-radius: 6px;
+  border: none;
+  color: var(--color-2);
+  cursor: pointer;
+  display: flex;
+  font-size: 12px;
+  font-weight: 200;
+  justify-content: center;
+  margin: auto 10px 10px auto;
+  padding: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.cart-empty {
+  color: var(--color-1);
+  font-size: 16px;
+  font-weight: 100;
+  margin: 16px 0 8px 0;
+  text-align: center;
+}
+
+@media screen and (min-width: 768px) {
+}
+
+@media (pointer: fine) {
+  .cart-item-btn:hover {
+    background-color: rgb(255, 50, 50);
+  }
+
+  .cart-item-btn:hover {
+    background-color: rgb(255, 50, 50);
+  }
+}

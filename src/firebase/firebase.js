@@ -1,18 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  doc,
-  getDoc,
-  query,
-  where,
-  setDoc,
-  deleteDoc,
-} from "firebase/firestore";
+import { getFirestore, collection, getDocs, doc, getDoc, where, setDoc, deleteDoc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_APIKEY,
@@ -29,28 +18,23 @@ export const db = getFirestore(app);
 export const storage = getStorage(app);
 
 export const postProduct = async (data) => {
-  console.log("postProducts");
   if (data) {
     let numberOfItemsThatIncludeThisId = "";
     const lastItemWithIncludeId = await getDocs(collection(db, "products"), where("id", ">=", data.id));
     const lastItem = lastItemWithIncludeId.docs[lastItemWithIncludeId.docs.length - 1];
     if (lastItem) {
-      numberOfItemsThatIncludeThisId = lastItemWithIncludeId.docs.filter((item) =>
-        item.data().id.includes(data.id)
-      ).length;
+      numberOfItemsThatIncludeThisId = lastItemWithIncludeId.docs.filter((item) => item.data().id.includes(data.id)).length;
     }
     try {
       data.id = data.id + " " + numberOfItemsThatIncludeThisId;
       await setDoc(doc(db, "products", data.id), data);
-      console.log("Document written with ID: ", data.id);
     } catch (error) {
-      console.error("Error adding document: ", error);
+      console.log("Error adding document: ", error);
     }
   }
 };
 
 export const getProducts = async (products_id) => {
-  console.log("getProducts");
   if (products_id === "all") {
     const productsCollection = collection(db, "products");
     const productsSnapshot = await getDocs(productsCollection);
@@ -60,38 +44,29 @@ export const getProducts = async (products_id) => {
     products_id = products_id.slice(0, 2);
     const productsCollection = collection(db, "products");
     const productsSnapshot = await getDocs(productsCollection);
-    const productsList = productsSnapshot.docs
-      .map((doc) => doc.data())
-      .filter((product) => product.id.includes(products_id));
+    const productsList = productsSnapshot.docs.map((doc) => doc.data()).filter((product) => product.id.includes(products_id));
     return productsList;
   }
 };
 
 export const deleteProduct = async (id) => {
-  console.log("deleteProduct");
   const docRef = doc(db, "products", id);
   await deleteDoc(docRef);
 };
 
 export const postUserOrder = async (data) => {
-  console.log("postUserOrder");
-  console.log("1", data);
   if (data.email) {
-    console.log("2", data);
     const existingUser = await getDoc(doc(db, "users", data.email));
     if (existingUser.exists()) {
-      console.log("3", data);
       await setDoc(doc(db, "users", data.email), {
         ...existingUser.data(),
         orders: [...existingUser.data().orders, data.order],
       });
-      console.log("Document updated with ID: ", data.email);
     } else {
       await setDoc(doc(db, "users", data.email), {
         email: data.email,
         orders: [data.order],
       });
-      console.log("Document written with ID: ", data.email);
     }
   } else {
     console.log("No email provided");
@@ -100,12 +75,10 @@ export const postUserOrder = async (data) => {
 
 /* save the user images in the images folder of the firebase storage */
 export const postImageInStorage = async (file) => {
-  console.log("postImageInStorage");
   if (file) {
     const storageRef = ref(storage, "images/" + file.name);
     const snapshot = await uploadBytes(storageRef, file);
     const url = await getDownloadURL(snapshot.ref);
-    console.log("File available at", url);
     return url;
   } else {
     console.log("No file provided");
@@ -113,20 +86,16 @@ export const postImageInStorage = async (file) => {
 };
 
 export const postInStorageProductsImages = async (file, fileId) => {
-  console.log("postInStorageProductsImages");
   if (file && fileId) {
     let numberOfItemsThatIncludeThisId = "";
     const lastItemWithIncludeId = await getDocs(collection(db, "products"), where("id", ">=", fileId));
     const lastItem = lastItemWithIncludeId.docs[lastItemWithIncludeId.docs.length - 1];
     if (lastItem) {
-      numberOfItemsThatIncludeThisId = lastItemWithIncludeId.docs.filter((item) =>
-        item.data().id.includes(fileId)
-      ).length;
+      numberOfItemsThatIncludeThisId = lastItemWithIncludeId.docs.filter((item) => item.data().id.includes(fileId)).length;
     }
     const storageRef = ref(storage, "productsImages/" + fileId + " " + numberOfItemsThatIncludeThisId + " " + ".webp");
     const snapshot = await uploadBytes(storageRef, file);
     const url = await getDownloadURL(snapshot.ref);
-    console.log("File available at", url);
     return url;
   } else {
     console.log("No file provided or fileId");
@@ -134,7 +103,6 @@ export const postInStorageProductsImages = async (file, fileId) => {
 };
 
 export const getUsers = async () => {
-  console.log("getUsers");
   const usersCollection = collection(db, "users");
   const usersSnapshot = await getDocs(usersCollection);
   const usersList = usersSnapshot.docs.map((doc) => doc.data());
@@ -142,7 +110,6 @@ export const getUsers = async () => {
 };
 
 export const getUserOrders = async (email) => {
-  console.log("getUserOrders");
   const user = await getDoc(doc(db, "users", email));
   if (user.exists()) {
     return user.data().orders;
@@ -151,26 +118,22 @@ export const getUserOrders = async (email) => {
   }
 };
 
-export const deleteThisUserOrder = async (email, id, price = "") => {
-  console.log("deleteThisUserOrder");
+export const deleteThisUserOrder = async (email, _id, price = "") => {
   const user = await getDoc(doc(db, "users", email));
   if (user.exists()) {
-    const newOrders = user.data().orders.filter((userOrder) => userOrder.id !== id);
+    const newOrders = user.data().orders.filter((userOrder) => userOrder._id !== _id);
     await setDoc(doc(db, "users", email), {
       orders: newOrders,
     });
-    if (!price) deleteThisImageOfThisOrder(id);
-    console.log("Document updated with ID: ", email);
+    if (!price) deleteThisImageOfThisOrder(_id);
   } else {
     console.log("No such document!");
   }
 };
 
-export const deleteThisImageOfThisOrder = async (id) => {
-  console.log("deleteThisImageOfThisOrder");
-  console.log(id);
-  const imageName1 = id;
-  const imageName2 = id + "_distribution";
+export const deleteThisImageOfThisOrder = async (_id) => {
+  const imageName1 = _id;
+  const imageName2 = _id + "_distribution";
   const imageRef1 = ref(storage, "images/" + imageName1);
   const imageRef2 = ref(storage, "images/" + imageName2);
   await deleteObject(imageRef1);
