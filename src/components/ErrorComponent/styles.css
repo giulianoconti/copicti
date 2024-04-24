@@ -1,0 +1,13 @@
+.error {
+  height: auto;
+  width: 40%;
+}
+
+.error h1 {
+  color: var(--neutral-gray1-100);
+  font-size: 24px;
+  font-weight: 200;
+  text-align: center;
+  transform: translateY(-32px);
+}
+ 
