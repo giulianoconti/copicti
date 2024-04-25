@@ -21,8 +21,6 @@ const MyCart = () => {
     setIsLoadingOrder(false);
   };
 
-  console.log(order);
-
   return (
     <div className="cart">
       <div className="cart-container">

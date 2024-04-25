@@ -10,9 +10,9 @@ import Carousel2Desktop from "src/assets/home/carousel-2-desktop.webp";
 import Carousel3Desktop from "src/assets/home/carousel-3-desktop.webp";
 import IconFree from "src/assets/icon-free.png";
 import IconTransaction from "src/assets/icon-transaction.png";
-import landscapeImage from "src/assets/home/landscape.jpg";
+import AbstractImage from "src/assets/home/abstract.jpg";
 import animalsImage from "src/assets/home/animals.jpg";
-import Abstract1Image from "src/assets/home/bestSellers/abstract-1.jpg";
+import landscapeImage from "src/assets/home/landscape.jpg";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
 import "./styles.css";
 
@@ -60,7 +60,7 @@ const Home = () => {
           <h2>Shop Popular Categories</h2>
 
           <Link to="/products?page=1&categories=abstract" className="home-container-popular-item">
-            <img src={Abstract1Image} alt="abstract" />
+            <img src={AbstractImage} alt="abstract" />
             <h3>Abstract</h3>
           </Link>
 

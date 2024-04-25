@@ -41,7 +41,6 @@ const Product = () => {
 
   const addToCart = async () => {
     if (userInfo) {
-      console.log(userInfo.email, product);
       setIsAddingToCart(true);
       await postUserOrder({ email: userInfo.email, order: product });
       const updatedOrders = await getUserOrders(userInfo.email);
