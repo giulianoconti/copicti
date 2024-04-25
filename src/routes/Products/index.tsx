@@ -29,6 +29,8 @@ const Products = () => {
     }
   }, [width]);
 
+  console.log(import.meta.env.VITE_SERVER_URL)
+
   useEffect(() => {
     const getProducts = async (retryCount = 0) => {
       setIsLoadingItems(true);
