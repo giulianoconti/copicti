@@ -1,4 +1,4 @@
-import homeFrameFull from "src/assets/homeFrameFull.webp";
+import homeFrameFull from "src/assets/createPaintingBg.jpg";
 
 type BoxShowImgContainerProps = {
   handleFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;

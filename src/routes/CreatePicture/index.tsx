@@ -18,7 +18,7 @@ import triptychCircularM from "src/assets/copictiTriptychMCircular.webp";
 import triptychCircularS from "src/assets/copictiTriptychSCircular.webp";
 import customEmpty from "src/assets/copictiEmpty.webp";
 import customEmptyPlant from "src/assets/copictiEmptyPlant.webp";
-import homeFrameFull from "src/assets/homeFrameFull.webp";
+import homeFrameFull from "src/assets/createPaintingBg.jpg";
 import html2canvas from "html2canvas";
 import { postImageInStorage, postInStorageProductsImages, postProduct, postUserOrder } from "src/firebase/firebase";
 import { useAuth } from "src/context/authContext";

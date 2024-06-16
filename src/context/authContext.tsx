@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { auth, getUserOrders } from "src/firebase/firebase";
 import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
-import homeFrameFull from "src/assets/homeFrameFull.webp";
+import homeFrameFull from "src/assets/createPaintingBg.jpg";
 
 interface Auth {
   loginWithGoogle: () => void;
