@@ -1,0 +1,14 @@
+.isError-box {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+}
+
+.isError-box-text {
+  color: var(--primary-red-100);
+  font-size: 16px;
+  font-weight: 400;
+  text-align: center;
+}

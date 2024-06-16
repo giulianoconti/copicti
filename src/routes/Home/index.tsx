@@ -14,18 +14,24 @@ import AbstractImage from "src/assets/home/abstract.jpg";
 import animalsImage from "src/assets/home/animals.jpg";
 import landscapeImage from "src/assets/home/landscape.jpg";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
+import { IsLoading, IsError } from "src/components";
 import "./styles.css";
 
 const Home = () => {
   const { width } = useWindowSize();
+  const [isLoading, setIsLoading] = useState(false);
   const [top8BestSellers, settop8BestSellers] = useState([]);
+  const [isError, setIsError] = useState(false);
 
   const getBestSellers = async () => {
     try {
+      setIsLoading(true);
       const response = await fetch(`${import.meta.env.VITE_SERVER_URL}/paintings?categories=popular&page=1`);
       const data = await response.json();
       settop8BestSellers(data.paintings.slice(0, 8));
+      setIsLoading(false);
     } catch (error) {
+      setIsError(true);
       console.log(error);
     }
   };
@@ -78,18 +84,26 @@ const Home = () => {
         <div className="home-container-best-sellers">
           <h2>Best Sellers</h2>
 
-          {top8BestSellers.length > 0 &&
-            top8BestSellers.map((painting) => (
-              <Link key={painting._id} to={`/product/${painting._id}`} className="home-container-best-sellers-item">
-                <div className="home-container-best-sellers-item-img">
-                  <img src={painting.image} />
-                </div>
-                <div className="home-container-best-sellers-item-container">
-                  <h3>{painting.name}</h3>
-                  <h4>${painting.price}</h4>
-                </div>
-              </Link>
-            ))}
+          {isLoading ? (
+            <IsLoading />
+          ) : isError ? (
+            <IsError />
+          ) : (
+            <div className="home-container-best-sellers-content">
+              {top8BestSellers.length > 0 &&
+                top8BestSellers.map((painting) => (
+                  <Link key={painting._id} to={`/product/${painting._id}`} className="home-container-best-sellers-content-item">
+                    <div className="home-container-best-sellers-content-item-img">
+                      <img src={painting.image} />
+                    </div>
+                    <div className="home-container-best-sellers-content-item-container">
+                      <h3>{painting.name}</h3>
+                      <h4>${painting.price}</h4>
+                    </div>
+                  </Link>
+                ))}
+            </div>
+          )}
         </div>
       </div>
     </div>
