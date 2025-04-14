@@ -1,11 +1,10 @@
 import { useAuth } from "src/context/authContext";
-import googleIcon from "src/assets/googleIcon.svg";
-import { IsLoading } from "src/components";
+import { IsLoading, LoginWithGoogleBtn } from "src/components";
 import "./styles.css";
 import "src/stylesGlobal.css";
 
 const LoginView = () => {
-  const { loginWithGoogle, userInfo, logout, loadingUser } = useAuth();
+  const { userInfo, logout, loadingUser } = useAuth();
 
   if (loadingUser)
     return (
@@ -34,10 +33,7 @@ const LoginView = () => {
       <div className="login">
         <div className="login-container">
           <h3 className="login-alert-text">Registering will allow you to contact us directly and add items to your shopping cart with ease.</h3>
-          <button className="login-btn-google" onClick={loginWithGoogle}>
-            <img className="login-btn-icon" src={googleIcon} alt="google icon" />
-            Login with Google
-          </button>
+          <LoginWithGoogleBtn />
         </div>
       </div>
     );

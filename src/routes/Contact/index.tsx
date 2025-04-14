@@ -1,7 +1,5 @@
-import React from "react";
-import { IsLoading } from "src/components";
+import { IsLoading, LoginWithGoogleBtn } from "src/components";
 import { useAuth } from "src/context/authContext";
-import googleIcon from "src/assets/googleIcon.svg";
 import "./styles.css";
 
 const Contact = () => {
@@ -34,10 +32,7 @@ const Contact = () => {
           </div>
 
           <div className="contact-form-google-container">
-            <button className="login-btn-google" onClick={loginWithGoogle}>
-              <img className="login-btn-icon" src={googleIcon} alt="google icon" />
-              Login with Google
-            </button>
+            <LoginWithGoogleBtn />
           </div>
         </form>
       </div>

@@ -7,6 +7,10 @@
   width: 100%;
 }
 
+.slider {
+  user-select: none;
+}
+
 @keyframes carousel {
   0% {
     transform: translateX(0);
