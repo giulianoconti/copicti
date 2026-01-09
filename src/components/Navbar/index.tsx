@@ -1,26 +1,16 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { Cross1Icon, HamburgerMenuIcon } from "@radix-ui/react-icons";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "src/firebase/firebase";
 import { useAuth } from "src/context/authContext";
 import logo from "/copictiLogo.svg";
 import "./styles.css";
 
 const Navbar = () => {
-  const { order } = useAuth();
+  const { order, userInfo } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
-  const [username, setUsername] = useState("");
 
-  useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setUsername(user.displayName.slice(0, 3));
-      } else {
-        setUsername("");
-      }
-    });
-  }, []);
+  // Get first 3 characters of display name from auth context
+  const username = userInfo?.displayName?.slice(0, 3) || "";
 
   const handleMenu = () => {
     setShowMenu(!showMenu);

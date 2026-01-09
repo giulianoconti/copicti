@@ -1,9 +1,13 @@
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect } from "react";
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/authContext";
 import { AccessIfLogged, AccessIfYouAreAdmin, Navbar, Footer } from "src/components";
 import { ScrollToTop } from "./utils/ScrollToTop";
+import { api } from "./services/api";
 import "./index.css";
+
+// Pre-warm the server on app load (Render free tier goes to sleep after inactivity)
+api.healthCheck().catch(() => {});
 
 const HomeView = lazy(() => import("./routes/Home"));
 const LoginView = lazy(() => import("./routes/Login"));

@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { CaretDownIcon } from "@radix-ui/react-icons";
-import { IsLoading } from "src/components";
+import { IsLoading, ErrorComponent, ProductCard } from "src/components";
 import { useWindowSize } from "src/utils/hooks/useWindowSize";
-import { Painting } from "src/utils/types";
 import { useNavigateParams } from "src/utils/hooks/useNavigateParams";
-import { ErrorComponent } from "src/components";
+import { api, PaintingsResponse } from "src/services/api";
+import {
+  BROWSE_ART_CATEGORIES,
+  SUBJECT_CATEGORIES,
+  SHAPE_CATEGORIES,
+  SIZE_CATEGORIES,
+  formatCategoryName,
+} from "src/constants/categories";
 import "./styles.css";
 
 const Products = () => {
-  const [data, setData] = useState<{ totalPages: number; currentPage: number; paintings: Painting[] }>({
+  const [data, setData] = useState<PaintingsResponse>({
     totalPages: 0,
     currentPage: 0,
     paintings: [],
   });
   const [isLoadingItems, setIsLoadingItems] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<Error | null>(null);
   const [showFilters, setShowFilters] = useState(false);
   const { width } = useWindowSize();
   const [searchParams] = useSearchParams();
@@ -33,30 +39,20 @@ const Products = () => {
     const getProducts = async (retryCount = 0) => {
       setIsLoadingItems(true);
       try {
-        let url = `${import.meta.env.VITE_SERVER_URL}/paintings`;
-        if (categoriesParams) {
-          url += `?categories=${categoriesParams}`;
-          if (pageParams) {
-            url += `&page=${pageParams}`;
-          }
-        } else if (pageParams) {
-          url += `?page=${pageParams}`;
-        }
-
-        const response = await fetch(url);
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        const data = await response.json();
-        setData(data);
-        setIsLoadingItems(false);
-      } catch (error) {
+        const response = await api.getPaintings({
+          categories: categoriesParams || undefined,
+          page: pageParams,
+        });
+        setData(response);
+        setError(null);
+      } catch (err) {
         if (retryCount < 1) {
           setTimeout(() => getProducts(retryCount + 1), 3000);
         } else {
-          setError(error);
-          setIsLoadingItems(false);
+          setError(err as Error);
         }
+      } finally {
+        setIsLoadingItems(false);
       }
     };
 
@@ -95,10 +91,10 @@ const Products = () => {
           disabled={disabled}
           id={filterName}
           name={filterName}
-          onChange={disabled ? null : handleFiltersSelected}
+          onChange={disabled ? undefined : handleFiltersSelected}
           type="checkbox"
         />
-        <label htmlFor={filterName}>{filterName.replace(/([A-Z])/g, " $1").toUpperCase()}</label>
+        <label htmlFor={filterName}>{formatCategoryName(filterName)}</label>
       </div>
     );
   };
@@ -151,42 +147,30 @@ const Products = () => {
           <div className={`products-filter-container ${showFilters ? "" : "hidden"}`}>
             <div className="products-filter-container-type">
               <h3>BROWSE ART</h3>
-
-              <CheckFilters filterName="paintings" />
-              <CheckFilters filterName="prints" />
-              <CheckFilters filterName="onSale" />
-              <CheckFilters filterName="newArrivals" />
-              <CheckFilters filterName="popular" />
+              {BROWSE_ART_CATEGORIES.map((category) => (
+                <CheckFilters key={category} filterName={category} />
+              ))}
             </div>
 
             <div className="products-filter-container-type">
               <h3>BY SUBJECT</h3>
-
-              <CheckFilters filterName="abstract" />
-              <CheckFilters filterName="landscape" />
-              <CheckFilters filterName="nature" />
-              <CheckFilters filterName="people" />
-              <CheckFilters filterName="animals" />
+              {SUBJECT_CATEGORIES.map((category) => (
+                <CheckFilters key={category} filterName={category} />
+              ))}
             </div>
 
             <div className="products-filter-container-type disabled">
               <h3>BY SHAPE</h3>
-
-              <CheckFilters disabled={true} filterName="polyptych" />
-              <CheckFilters disabled={true} filterName="polyptychSh" />
-              <CheckFilters disabled={true} filterName="triptych" />
-              <CheckFilters disabled={true} filterName="triptychSquare" />
-              <CheckFilters disabled={true} filterName="triptychCircle" />
+              {SHAPE_CATEGORIES.map((category) => (
+                <CheckFilters key={category} filterName={category} disabled />
+              ))}
             </div>
 
             <div className="products-filter-container-type disabled">
               <h3>BY SIZE (CM)</h3>
-
-              <CheckFilters disabled={true} filterName="exLarge" />
-              <CheckFilters disabled={true} filterName="large" />
-              <CheckFilters disabled={true} filterName="medium" />
-              <CheckFilters disabled={true} filterName="small" />
-              <CheckFilters disabled={true} filterName="multiPanel" />
+              {SIZE_CATEGORIES.map((category) => (
+                <CheckFilters key={category} filterName={category} disabled />
+              ))}
             </div>
           </div>
         </div>
@@ -194,22 +178,18 @@ const Products = () => {
         <div className="products-items">
           <Pagination />
 
-          {isLoadingItems /* || true */ ? (
+          {isLoadingItems ? (
             <IsLoading />
           ) : error ? (
             <ErrorComponent />
           ) : (
-            data?.paintings?.map((product, i) => {
-              return (
-                <Link className="products-item" to={`/product/${product._id}`} key={product._id}>
-                  <div className="products-item-img">
-                    <img src={product.image} alt={"product " + product._id} />
-                  </div>
-                  <h3 className="products-item-name">{product.name}</h3>
-                  <h5 className="products-item-price">${product.price}</h5>
-                </Link>
-              );
-            })
+            data.paintings.map((painting) => (
+              <ProductCard
+                key={painting._id}
+                painting={painting}
+                className="products-item"
+              />
+            ))
           )}
 
           <Pagination />

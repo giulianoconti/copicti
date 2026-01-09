@@ -16,7 +16,15 @@ COPICTI is a web page where you can add prefabricated paintings to your cart or 
 
 * [React](https://reactjs.org/)
 * [Firebase](https://firebase.google.com/)
+* [MongoDB Atlas](https://www.mongodb.com/atlas)
 
-### Link
+### Links
 
-https://copicti.vercel.app/
+| Resource | URL |
+|----------|-----|
+| 🌐 Live Site | https://copicti.vercel.app |
+| 🔥 Firebase Console | https://console.firebase.google.com/u/0/project/copic-12fe1/overview |
+| 🗄️ MongoDB Atlas | https://cloud.mongodb.com |
+| 🚀 Server (Render) | https://dashboard.render.com |
+| 💚 API Health Check | https://copicti-server.onrender.com/health |
+| 📦 Server Repo | https://github.com/giulianoconti/copicti_server |

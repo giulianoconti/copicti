@@ -8,3 +8,4 @@ export { default as IsError } from "./IsError";
 export { default as IsLoading } from "./IsLoading";
 export { default as LoginWithGoogleBtn } from "./LoginWithGoogleBtn";
 export { default as Navbar } from "./Navbar";
+export { default as ProductCard } from "./ProductCard";

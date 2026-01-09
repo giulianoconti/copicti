@@ -1,66 +1,60 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { auth, getUserOrders } from "src/firebase/firebase";
-import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
+import { onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signInWithRedirect, User } from "firebase/auth";
 import homeFrameFull from "src/assets/createPaintingBg.jpg";
 
-interface Auth {
-  loginWithGoogle: () => void;
-  userInfo: {
-    uid: string;
-    email: string;
-    emailVerified: boolean;
-    displayName: string;
-    isAnonymous: boolean;
-    photoURL: string;
-    providerData: [
-      {
-        providerId: string;
-        uid: string;
-        displayName: string;
-        email: string;
-        phoneNumber: null;
-        photoURL: string;
-      }
-    ];
-    stsTokenManager: {
-      refreshToken: string;
-      accessToken: string;
-      expirationTime: number;
-    };
-    createdAt: string;
-    lastLoginAt: string;
-    apiKey: string;
-    appName: string;
-  };
-  logout: () => void;
+// ============================================
+// Types
+// ============================================
+
+export interface ImageState {
+  height: string;
+  imageDistribution: string;
+  imageUploaded: string;
+  name: string;
+  top?: string;
+  width: string;
+}
+
+export interface OrderItem {
+  _id: string;
+  name: string;
+  price: number;
+  image: string;
+  [key: string]: unknown;
+}
+
+interface AuthContextType {
+  loginWithGoogle: () => Promise<void>;
+  userInfo: User | null;
+  logout: () => Promise<void>;
   loadingUser: boolean;
-  images: {
-    height: string;
-    imageDistribution: string;
-    imageUploaded: string;
-    name: string;
-    top?: string;
-    width: string;
-  };
-  setImages: (images: any) => void;
-  order: any;
-  setOrder: (order: any) => void;
+  images: ImageState;
+  setImages: (images: ImageState) => void;
+  order: OrderItem[];
+  setOrder: (order: OrderItem[]) => void;
   isLoadingOrder: boolean;
   setIsLoadingOrder: (isLoadingOrder: boolean) => void;
 }
 
-export const authContext = createContext<Auth>({
-  loginWithGoogle: () => {},
+// ============================================
+// Context
+// ============================================
+
+const defaultImageState: ImageState = {
+  imageDistribution: "",
+  imageUploaded: homeFrameFull,
+  name: "",
+  height: "",
+  width: "",
+};
+
+export const authContext = createContext<AuthContextType>({
+  loginWithGoogle: async () => {},
   userInfo: null,
-  logout: () => {},
+  logout: async () => {},
   loadingUser: true,
-  images: {
-    imageDistribution: "",
-    imageUploaded: homeFrameFull,
-    name: "",
-    height: "",
-    width: "",
-  },
+  images: defaultImageState,
   setImages: () => {},
   order: [],
   setOrder: () => {},
@@ -68,24 +62,22 @@ export const authContext = createContext<Auth>({
   setIsLoadingOrder: () => {},
 });
 
-export const useAuth = (): Auth => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(authContext);
   if (!context) throw new Error("useAuth must be used within an AuthProvider");
   return context;
 };
 
-export const AuthProvider = ({ children }: { children: any }) => {
-  const [userInfo, setUserInfo] = useState(null);
+// ============================================
+// Provider
+// ============================================
+
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [userInfo, setUserInfo] = useState<User | null>(null);
   const [loadingUser, setLoadingUser] = useState(true);
-  const [order, setOrder] = useState([]);
+  const [order, setOrder] = useState<OrderItem[]>([]);
   const [isLoadingOrder, setIsLoadingOrder] = useState(true);
-  const [images, setImages] = useState({
-    imageDistribution: "",
-    imageUploaded: homeFrameFull,
-    name: "",
-    height: "",
-    width: "",
-  });
+  const [images, setImages] = useState<ImageState>(defaultImageState);
 
   const loginWithGoogle = async () => {
     const googleProvider = new GoogleAuthProvider();

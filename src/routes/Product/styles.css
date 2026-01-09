@@ -71,6 +71,19 @@
   cursor: not-allowed;
 }
 
+.product-container-btn--success {
+  background-color: #22c55e;
+  opacity: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.product-container-btn--success:disabled {
+  opacity: 1;
+}
+
 .product-container-btn:not(:disabled):hover {
   background-color: var(--neutral-gray5-100);
 }

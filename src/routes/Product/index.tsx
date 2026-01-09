@@ -20,6 +20,7 @@ const Product = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(false);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [addedToCart, setAddedToCart] = useState(false);
   const { loginWithGoogle, userInfo, setOrder } = useAuth();
 
   useEffect(() => {
@@ -46,6 +47,10 @@ const Product = () => {
       const updatedOrders = await getUserOrders(userInfo.email);
       setOrder(updatedOrders);
       setIsAddingToCart(false);
+      setAddedToCart(true);
+
+      // Reset after 3 seconds
+      setTimeout(() => setAddedToCart(false), 3000);
     } else {
       loginWithGoogle();
     }
@@ -82,6 +87,13 @@ const Product = () => {
               <button className="product-container-btn" disabled>
                 ADDING
                 <span className="loader-dots" />
+              </button>
+            ) : addedToCart ? (
+              <button className="product-container-btn product-container-btn--success" disabled>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                ADDED TO CART
               </button>
             ) : (
               <button className="product-container-btn" onClick={addToCart}>
